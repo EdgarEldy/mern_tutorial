@@ -17,5 +17,8 @@
   "main": "bin/www",
   "repository": "https://github.com/EdgarEldy/fullstack_expressjs_reactjs_tutorial.git",
   "author": "Edgar Eldy <ed.eldy21@live.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "sequelize-cli": "^6.3.0"
+  }
 }
