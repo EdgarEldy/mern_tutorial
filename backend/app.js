@@ -7,6 +7,9 @@ var cors = require('cors');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+// Categories
+var categoriesRouter = require('./routes/categories');
+
 var app = express();
 
 // Enable cors middleware
@@ -21,4 +24,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
+// Categories apis
+app.get('/categories', categoriesRouter);
+app.post('/categories', categoriesRouter);
 module.exports = app;
