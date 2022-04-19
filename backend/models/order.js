@@ -10,7 +10,13 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // Add relationship to Customer model
+      Customer.belongsTo(models.Customer, {
+        foreignKey: 'customer_id',
+        onDelete: 'CASCADE'
+      });
+
+
     }
   };
   Order.init({
