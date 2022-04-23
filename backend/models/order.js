@@ -11,12 +11,12 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // Add relationship to Customer model
-            Customer.belongsTo(models.Customer, {
+            Order.belongsTo(models.Customer, {
                 foreignKey: 'customer_id',
                 onDelete: 'CASCADE'
             });
             // Add relationship to Product model
-            Product.belongsTo(models.Product, {
+            Order.belongsTo(models.Product, {
                 foreignKey: 'product_id',
                 onDelete: 'CASCADE'
             });
