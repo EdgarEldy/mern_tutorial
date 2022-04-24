@@ -25,4 +25,16 @@ router.post('/categories', async (req, res, next) => {
         });
 });
 
+// Get category data by id
+router.get('/categories/:id', (req, res, next) => {
+    const id = req.params.id;
+    Category.findByPk(id)
+        .then((data) => {
+            res.send(data);
+        })
+        .catch((error) => {
+            res.send('Category not found');
+        });
+});
+
 module.exports = router;
