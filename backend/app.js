@@ -27,4 +27,5 @@ app.use('/users', usersRouter);
 // Categories apis
 app.get('/categories', categoriesRouter);
 app.post('/categories', categoriesRouter);
+app.get('/categories/:id', categoriesRouter);
 module.exports = app;
