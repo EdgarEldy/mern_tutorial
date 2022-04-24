@@ -18,7 +18,7 @@ router.post('/categories', async (req, res, next) => {
     };
 
     Category.create(category).then((data) => {
-        res.send(category.category_name = ' has been created successfully !');
+        res.send(category.category_name + ' has been created successfully !');
     })
         .catch((err) => {
             res.send('Error');
