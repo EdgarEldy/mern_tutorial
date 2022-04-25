@@ -10,6 +10,9 @@ var usersRouter = require('./routes/users');
 // Categories
 var categoriesRouter = require('./routes/categories');
 
+// Products
+var productsRouter = require('./routes/products');
+
 var app = express();
 
 // Enable cors middleware
