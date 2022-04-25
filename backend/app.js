@@ -10,6 +10,9 @@ var usersRouter = require('./routes/users');
 // Categories
 var categoriesRouter = require('./routes/categories');
 
+// Products
+var productsRouter = require('./routes/products');
+
 var app = express();
 
 // Enable cors middleware
@@ -30,4 +33,11 @@ app.post('/categories', categoriesRouter);
 app.get('/categories/:id', categoriesRouter);
 app.put('/categories/edit/:id', categoriesRouter);
 app.post('/categories/delete/:id', categoriesRouter);
+
+// Products apis
+app.get('/products', productsRouter);
+app.post('/products', productsRouter);
+app.get('/products/:id', productsRouter);
+app.put('/products/edit/:id', productsRouter);
+app.post('/products/delete/:id', productsRouter);
 module.exports = app;
