@@ -21,4 +21,23 @@ router.get('/products', async function (req, res, next) {
     return res.send(products);
 });
 
+// Add a product
+router.post('/products', (req, res, next) => {
+
+    // Get products data
+    const product = {
+        category_id: req.body.category_id,
+        product_name: req.body.product_name,
+        unit_price: req.body.unit_price
+    }
+
+    Product.create(product)
+        .then((data) => {
+            res.send(product.product_name + ' has been created successfully !');
+        })
+        .catch((error) => {
+            res.send('Error');
+        });
+});
+
 module.exports = router;
