@@ -13,4 +13,23 @@ router.get('/customers', async (req, res, next) => {
     return res.json(customers);
 });
 
+// Add a customer
+router.post('/customers', async (req, res, next) => {
+
+    const customer = {
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        tel: req.body.tel,
+        email: req.body.email,
+        address: req.body.address
+    };
+
+    Customer.create(customer).then((data) => {
+        res.send(customer.first_name + ' has been created successfully !');
+    })
+        .catch((err) => {
+            res.send('Error');
+        });
+});
+
 module.exports = router;
