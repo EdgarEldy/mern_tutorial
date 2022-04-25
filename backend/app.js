@@ -36,4 +36,5 @@ app.post('/categories/delete/:id', categoriesRouter);
 
 // Products apis
 app.get('/products', productsRouter);
+app.post('/products', productsRouter);
 module.exports = app;
