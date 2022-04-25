@@ -64,4 +64,19 @@ router.put("/customers/edit/:id", function (req, res, next) {
 
 });
 
+// Remove a customer
+router.post("/customers/delete/:id", (req, res, next) => {
+
+    const id = req.params.id;
+    Customer.destroy({
+        where: {id: id},
+    })
+        .then((data) => {
+            res.send("Customer has been removed successfully !");
+        })
+        .catch((error) => {
+            res.send("Error");
+        });
+});
+
 module.exports = router;
