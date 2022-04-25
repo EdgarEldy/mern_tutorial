@@ -32,4 +32,16 @@ router.post('/customers', async (req, res, next) => {
         });
 });
 
+// Get customer data by id
+router.get('/customers/:id', (req, res, next) => {
+    const id = req.params.id;
+    Customer.findByPk(id)
+        .then((data) => {
+            res.send(data);
+        })
+        .catch((error) => {
+            res.send('Error !');
+        });
+});
+
 module.exports = router;
