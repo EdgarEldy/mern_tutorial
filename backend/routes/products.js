@@ -72,4 +72,19 @@ router.put("/products/edit/:id", function (req, res, next) {
 
 });
 
+// Remove a product
+router.post("/products/delete/:id", (req, res, next) => {
+
+    const id = req.params.id;
+    Product.destroy({
+        where: {id: id},
+    })
+        .then((data) => {
+            res.send("Product has been removed successfully !");
+        })
+        .catch((error) => {
+            res.send("Error");
+        });
+});
+
 module.exports = router;
