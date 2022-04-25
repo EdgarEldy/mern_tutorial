@@ -46,5 +46,6 @@ app.post('/products/delete/:id', productsRouter);
 
 // Customers apis
 app.get('/customers', customersRouter);
+app.post('/customers', customersRouter);
 
 module.exports = app;
