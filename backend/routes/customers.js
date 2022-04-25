@@ -44,4 +44,24 @@ router.get('/customers/:id', (req, res, next) => {
         });
 });
 
+// Update a customer
+router.put("/customers/edit/:id", function (req, res, next) {
+
+    const id = req.params.id;
+
+    Customer.update(req.body, {
+        where: {id: id}
+    }).then((data) => {
+        if (data === 1) {
+
+            res.send(data);
+        } else {
+            res.send("Customer has been updated successfully ")
+        }
+    }).catch((err) => {
+        res.send("Error")
+    });
+
+});
+
 module.exports = router;
