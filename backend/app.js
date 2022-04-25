@@ -13,6 +13,9 @@ var categoriesRouter = require('./routes/categories');
 // Products
 var productsRouter = require('./routes/products');
 
+// Customers
+var customersRouter = require('./routes/customers');
+
 var app = express();
 
 // Enable cors middleware
