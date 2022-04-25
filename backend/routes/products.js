@@ -40,4 +40,16 @@ router.post('/products', (req, res, next) => {
         });
 });
 
+// Get products details by id
+router.get('/products/:id', (req, res, next) => {
+    const id = req.params.id;
+    Product.findByPk(id)
+        .then((data) => {
+            res.send(data);
+        })
+        .catch((error) => {
+            res.send('Product not found !');
+        });
+});
+
 module.exports = router;
