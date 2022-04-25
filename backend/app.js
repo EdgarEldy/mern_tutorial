@@ -43,4 +43,8 @@ app.post('/products', productsRouter);
 app.get('/products/:id', productsRouter);
 app.put('/products/edit/:id', productsRouter);
 app.post('/products/delete/:id', productsRouter);
+
+// Customers apis
+app.get('/customers', customersRouter);
+
 module.exports = app;
