@@ -20,3 +20,5 @@ router.get('/products', async function (req, res, next) {
     });
     return res.send(products);
 });
+
+module.exports = router;
