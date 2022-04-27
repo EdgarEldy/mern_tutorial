@@ -8,7 +8,7 @@ const db = require('../models');
 const Order = db.Order;
 
 // Initialize Customer model
-const Customer = Order.Customer;
+const Customer = db.Customer;
 
 // Initialize Product model
 const Product = db.Product;
