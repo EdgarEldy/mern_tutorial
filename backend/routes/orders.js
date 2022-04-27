@@ -7,4 +7,7 @@ const db = require('../models');
 // Initialize Order model
 const Order = db.Order;
 
+// Initialize Customer model
+const Customer = Order.Customer;
+
 module.exports = router;
