@@ -16,6 +16,9 @@ var productsRouter = require('./routes/products');
 // Customers
 var customersRouter = require('./routes/customers');
 
+// Orders
+var ordersRouter = require('./routes/orders');
+
 var app = express();
 
 // Enable cors middleware
@@ -50,5 +53,6 @@ app.post('/customers', customersRouter);
 app.get('/customers/:id', customersRouter);
 app.put('/customers/edit/:id', customersRouter);
 app.post('/customers/delete/:id', customersRouter);
+
 
 module.exports = app;
