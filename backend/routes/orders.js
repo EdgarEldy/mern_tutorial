@@ -51,4 +51,16 @@ router.post('/orders', (req, res, next) => {
         });
 });
 
+// Get order data by id
+router.get('/orders/:id', (req, res, next) => {
+    const id = req.params.id;
+    Order.findByPk(id)
+        .then((data) => {
+            res.send(data);
+        })
+        .catch((error) => {
+            res.send('Order not found !');
+        });
+});
+
 module.exports = router;
