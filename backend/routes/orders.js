@@ -83,4 +83,19 @@ router.put("/orders/edit/:id", function (req, res, next) {
 
 });
 
+// Remove an order
+router.post("/orders/delete/:id", (req, res, next) => {
+
+    const id = req.params.id;
+    Order.destroy({
+        where: {id: id},
+    })
+        .then((data) => {
+            res.send("Order has been removed successfully !");
+        })
+        .catch((error) => {
+            res.send("Error");
+        });
+});
+
 module.exports = router;
