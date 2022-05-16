@@ -31,4 +31,71 @@ router.get('/orders', async (req, res, next) => {
     return res.json(orders);
 });
 
+// Add a new order
+router.post('/orders', (req, res, next) => {
+
+    // Get orders data
+    const order = {
+        customer_id: req.body.customer_id,
+        product_id: req.body.product_id,
+        qty: req.body.qty,
+        total: req.body.total,
+    };
+
+    Order.create(order)
+        .then((data) => {
+            res.send('A new order has been created successfully !');
+        })
+        .catch((error) => {
+            res.send('Error');
+        });
+});
+
+// Get order data by id
+router.get('/orders/:id', (req, res, next) => {
+    const id = req.params.id;
+    Order.findByPk(id)
+        .then((data) => {
+            res.send(data);
+        })
+        .catch((error) => {
+            res.send('Order not found !');
+        });
+});
+
+// Update an order
+router.put("/orders/edit/:id", function (req, res, next) {
+
+    const id = req.params.id;
+
+    Order.update(req.body, {
+        where: {id: id}
+    }).then((data) => {
+        if (data === 1) {
+
+            res.send(data);
+        } else {
+            res.send("Order has been updated successfully ")
+        }
+    }).catch((err) => {
+        res.send("Error")
+    });
+
+});
+
+// Remove an order
+router.post("/orders/delete/:id", (req, res, next) => {
+
+    const id = req.params.id;
+    Order.destroy({
+        where: {id: id},
+    })
+        .then((data) => {
+            res.send("Order has been removed successfully !");
+        })
+        .catch((error) => {
+            res.send("Error");
+        });
+});
+
 module.exports = router;
