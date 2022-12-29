@@ -28,4 +28,10 @@ Content-Type: application/json
   "updated_at": "2022/12/29"
 }
 
+### POST: categories/delete/id
+POST http://localhost:3001/categories/delete/1
+Content-Type: application/json
+
+{}
+
 ###
