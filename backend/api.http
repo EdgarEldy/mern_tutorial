@@ -14,4 +14,8 @@ Content-Type: application/json
   "updated_at": "2022/12/29"
 }
 
+### GET: categories/id
+GET http://localhost:3001/categories/1
+Accept: application/json
+
 ###
