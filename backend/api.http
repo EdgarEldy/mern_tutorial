@@ -4,4 +4,14 @@
 GET http://localhost:3001/categories
 Accept: application/json
 
+### POST: categories
+POST http://localhost:3001/categories
+Content-Type: application/json
+
+{
+  "category_name": "Tomatoes",
+  "created_at": "2022/12/29",
+  "updated_at": "2022/12/29"
+}
+
 ###
