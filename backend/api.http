@@ -34,4 +34,8 @@ Content-Type: application/json
 
 {}
 
+### GET: products
+GET http://localhost:3001/products
+Accept: application/json
+
 ###
