@@ -88,4 +88,8 @@ Content-Type: application/json
   "address": "Kajaga"
 }
 
+### GET: customers/1
+GET http://localhost:3001/customers/1
+Accept: application/json
+
 ###
