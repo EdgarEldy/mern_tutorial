@@ -93,3 +93,14 @@ GET http://localhost:3001/customers/1
 Accept: application/json
 
 ###
+### PUT: customers/edit/id
+PUT http://localhost:3001/customers/edit/1
+Content-Type: application/json
+
+{
+  "first_name": "Edgar",
+  "last_name": "Brown",
+  "tel": "61735502",
+  "email": "ed.brown21@gmail.com",
+  "address": "Ngagara"
+}
