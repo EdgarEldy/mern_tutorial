@@ -65,3 +65,9 @@ Content-Type: application/json
   "created_at": "2023/01/14",
   "updated_at": "2023/01/14"
 }
+
+### POST: products/delete/id
+POST http://localhost:3001/products/delete/1
+Content-Type: application/json
+
+{}
