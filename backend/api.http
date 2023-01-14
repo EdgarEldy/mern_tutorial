@@ -76,4 +76,16 @@ Content-Type: application/json
 GET http://localhost:3001/customers
 Accept: application/json
 
+### POST: customers
+POST http://localhost:3001/customers
+Content-Type: application/json
+
+{
+  "first_name": "Edgar",
+  "last_name": "Eldy",
+  "tel": "75813742",
+  "email": "ed.eldy21@gmail.com",
+  "address": "Kajaga"
+}
+
 ###
