@@ -11,7 +11,7 @@ router.get('/categories', async (req, res, next) => {
 });
 
 // Add a category end point
-router.post('/categories', async (req, res, next) => {
+router.post('/categories',(req, res, next) => {
 
     const category = {
         category_name: req.body.category_name,
