@@ -71,3 +71,9 @@ POST http://localhost:3001/products/delete/1
 Content-Type: application/json
 
 {}
+
+### POST: orders
+GET http://localhost:3001/orders
+Accept: application/json
+
+###
