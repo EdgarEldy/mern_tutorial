@@ -92,3 +92,16 @@ Content-Type: application/json
 ### GET: orders/id
 GET http://localhost:3001/orders/1
 Accept: application/json
+
+### PUT: orders/edit/id
+PUT http://localhost:3001/orders/edit/1
+Content-Type: application/json
+
+{
+  "customer_id": 1,
+  "product_id": 2,
+  "qty": 4,
+  "total": 6400,
+  "created_at": "2023/01/18",
+  "updated_at": "2023/01/18"
+}
