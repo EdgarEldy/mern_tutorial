@@ -1,13 +1,15 @@
+import {Link} from "react-router-dom";
+
 function SideBar() {
     return (
         <div>
             <div id="sidebar-collapse" className="col-sm-3 col-lg-2 sidebar">
                 <ul className="nav menu">
-                    <li className="active"><a href>
+                    <li className="active"><Link to="/">
                         <svg className="glyph stroked dashboard-dial">
                             <use xlinkHref="#stroked-dashboard-dial"></use>
                         </svg>
-                        Dashboard</a></li>
+                        Dashboard</Link></li>
                     <li><a href>
                         <svg className="glyph stroked calendar">
                             <use xlinkHref="#stroked-calendar"></use>
