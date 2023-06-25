@@ -10,10 +10,10 @@ function Nav() {
                             <span className="icon-bar" />
                             <span className="icon-bar" />
                         </button>
-                        <a className="navbar-brand" href="/"><span>NODEJS TUTORIAL |</span> STORE MANAGEMENT SYSTEM</a>
+                        <a className="navbar-brand" href="/"><span>FULLSTACK NODE.JS AND REACT.JS TUTORIAL</span> STORE MANAGEMENT SYSTEM</a>
                         <ul className="user-menu">
                             <li className="dropdown pull-right">
-                                <a href="#" className="dropdown-toggle" data-toggle="dropdown"><svg className="glyph stroked male-user"><use xlinkHref="#stroked-male-user" /></svg> {/*?php //echo $_SESSION['username']; ?*/} <span className="caret" /></a>
+                                <a href className="dropdown-toggle" data-toggle="dropdown"><svg className="glyph stroked male-user"><use xlinkHref="#stroked-male-user" /></svg> {/*?php //echo $_SESSION['username']; ?*/} <span className="caret" /></a>
                                 <ul className="dropdown-menu" role="menu">
                                     <li><a href><svg className="glyph stroked male-user"><use xlinkHref="#stroked-male-user" /></svg>
                                     </a></li>
@@ -28,6 +28,5 @@ function Nav() {
 
     )
 }
-
 
 export default Nav;
