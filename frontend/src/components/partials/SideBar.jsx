@@ -27,7 +27,7 @@ function SideBar() {
                                 </svg></span> Products
                         </a>
                         <ul className="children collapse" id="sub-item-1">
-                            <li><a className href="/products">
+                            <li><a className href>
                                 <svg className="glyph stroked chevron-right">
                                     <use xlinkHref="#stroked-chevron-right">
                                     </use>
