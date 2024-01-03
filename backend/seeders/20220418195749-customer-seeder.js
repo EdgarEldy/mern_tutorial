@@ -11,7 +11,7 @@ module.exports = {
          *   isBetaMember: false
          * }], {});
          */
-        return queryInterface.bulkInsert("customers", [
+        return queryInterface.bulkInsert("Customers", [
             {
                 first_name: "John",
                 last_name: "Doe",
@@ -40,5 +40,6 @@ module.exports = {
          * Example:
          * await queryInterface.bulkDelete('People', null, {});
          */
+        await queryInterface.bulkDelete('Customers', null, {});
     }
 };

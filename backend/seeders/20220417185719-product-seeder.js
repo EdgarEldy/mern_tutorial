@@ -11,7 +11,7 @@ module.exports = {
          *   isBetaMember: false
          * }], {});
          */
-        return queryInterface.bulkInsert("products", [
+        return queryInterface.bulkInsert("Products", [
             {
                 category_id: 1,
                 product_name: "Amstel",
@@ -50,5 +50,7 @@ module.exports = {
          * Example:
          * await queryInterface.bulkDelete('People', null, {});
          */
+
+        await queryInterface.bulkDelete('Products', null, {});
     }
 };
