@@ -48,7 +48,7 @@ router.get('/categories/:id', (req, res, next) => {
 });
 
 // Update a category
-router.put("/categories/edit/:id", function (req, res, next) {
+router.put("/categories/:id", function (req, res, next) {
 
     const id = req.params.id;
 

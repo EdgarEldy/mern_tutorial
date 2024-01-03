@@ -28,6 +28,6 @@ app.use('/users', usersRouter);
 app.get('/categories', categoriesRouter);
 app.post('/categories', categoriesRouter);
 app.get('/categories/:id', categoriesRouter);
-app.put('/categories/edit/:id', categoriesRouter);
+app.put('/categories/:id', categoriesRouter);
 app.post('/categories/delete/:id', categoriesRouter);
 module.exports = app;
