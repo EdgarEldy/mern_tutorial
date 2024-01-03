@@ -73,7 +73,7 @@ router.put("/categories/:id", function (req, res, next) {
 });
 
 // Remove a category
-router.post("/categories/delete/:id", (req, res, next) => {
+router.delete("/categories/:id", (req, res, next) => {
 
     const id = req.params.id;
     Category.destroy({
@@ -85,7 +85,7 @@ router.post("/categories/delete/:id", (req, res, next) => {
                     message: `Cannot delete category with id = ${id}. Category was not found!`
                 });
             } else res.status(201).send({
-                message: 'Category was deleted successfully!'
+                message: 'Category has been deleted successfully!'
             });
         })
         .catch((error) => {
