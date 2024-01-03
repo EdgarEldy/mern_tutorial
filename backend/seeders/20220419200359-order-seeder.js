@@ -11,7 +11,7 @@ module.exports = {
          *   isBetaMember: false
          * }], {});
          */
-        return queryInterface.bulkInsert("orders", [
+        return queryInterface.bulkInsert("Orders", [
             {
                 customer_id: 1,
                 product_id: 2,
@@ -38,5 +38,6 @@ module.exports = {
          * Example:
          * await queryInterface.bulkDelete('People', null, {});
          */
+        await queryInterface.bulkDelete('Orders', null, {L});
     }
 };
