@@ -18,7 +18,7 @@ router.get('/products', async function (req, res, next) {
             required: true
         }]
     });
-    return res.send(products);
+    return res.json(products);
 });
 
 // Add a product
@@ -33,10 +33,14 @@ router.post('/products', (req, res, next) => {
 
     Product.create(product)
         .then((data) => {
-            res.send(product.product_name + ' has been created successfully !');
+            res.send({
+                message: product.product_name + ' has been created successfully !'
+            });
         })
         .catch((error) => {
-            res.send('Error');
+            res.status(500).send({
+                message: "Error while creating a product !"
+            });
         });
 });
 
@@ -45,45 +49,64 @@ router.get('/products/:id', (req, res, next) => {
     const id = req.params.id;
     Product.findByPk(id)
         .then((data) => {
-            res.send(data);
+            if (!data) {
+                res.status(404).send({
+                    message: "Can not found product with id: " + id
+                });
+            } else res.send(data);
         })
         .catch((error) => {
-            res.send('Product not found !');
+            res.status(500).send({
+                message: 'Error while fetching a product !'
+            });
         });
 });
 
 // Update a product by id
-router.put("/products/edit/:id", function (req, res, next) {
+router.put("/products/:id", function (req, res, next) {
 
     const id = req.params.id;
 
     Product.update(req.body, {
-        where: {id: id}
-    }).then((data) => {
-        if (data === 1) {
-
-            res.send(data);
-        } else {
-            res.send("Product has been updated successfully ")
+        where: {
+            id: id
         }
+    }).then((data) => {
+        if (!data) {
+            res.status(404).send({
+                message: `Cannot update product with id= ${id} !`
+            });
+        } else res.send({
+            message: 'Product has been updated successfully !'
+        });
     }).catch((err) => {
-        res.send("Error")
+        res.status(500).send({
+            message: 'Error while updating product !'
+        });
     });
 
 });
 
 // Remove a product
-router.post("/products/delete/:id", (req, res, next) => {
+router.delete("/products/:id", (req, res, next) => {
 
     const id = req.params.id;
     Product.destroy({
         where: {id: id},
     })
         .then((data) => {
-            res.send("Product has been removed successfully !");
+            if (!data) {
+                res.status(404).send({
+                    message: `Cannot delete product with id = ${id}. Product was not found!`
+                });
+            } else res.status(201).send({
+                message: 'Product has been removed successfully!'
+            });
         })
         .catch((error) => {
-            res.send("Error");
+            res.status(500).send({
+                message: 'Error while removing a product !'
+            });
         });
 });
 

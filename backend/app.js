@@ -37,22 +37,22 @@ app.use('/users', usersRouter);
 app.get('/categories', categoriesRouter);
 app.post('/categories', categoriesRouter);
 app.get('/categories/:id', categoriesRouter);
-app.put('/categories/edit/:id', categoriesRouter);
-app.post('/categories/delete/:id', categoriesRouter);
+app.put('/categories/:id', categoriesRouter);
+app.delete('/categories/:id', categoriesRouter);
 
 // Products apis
 app.get('/products', productsRouter);
 app.post('/products', productsRouter);
 app.get('/products/:id', productsRouter);
-app.put('/products/edit/:id', productsRouter);
-app.post('/products/delete/:id', productsRouter);
+app.put('/products/:id', productsRouter);
+app.delete('/products/:id', productsRouter);
 
 // Customers apis
 app.get('/customers', customersRouter);
 app.post('/customers', customersRouter);
 app.get('/customers/:id', customersRouter);
-app.put('/customers/edit/:id', customersRouter);
-app.post('/customers/delete/:id', customersRouter);
+app.put('/customers/:id', customersRouter);
+app.delete('/customers/:id', customersRouter);
 
 // Orders apis
 app.get('/orders', ordersRouter);
