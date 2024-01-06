@@ -25,10 +25,14 @@ router.post('/customers', async (req, res, next) => {
     };
 
     Customer.create(customer).then((data) => {
-        res.send(customer.first_name + ' has been created successfully !');
+        res.send({
+            message: customer.first_name + customer.last_name + ' has been created successfully !'
+        });
     })
         .catch((err) => {
-            res.send('Error');
+            res.status(500).send({
+                message: "Error while creating a customer !"
+            });
         });
 });
 
@@ -37,45 +41,66 @@ router.get('/customers/:id', (req, res, next) => {
     const id = req.params.id;
     Customer.findByPk(id)
         .then((data) => {
-            res.send(data);
+            if (!data) {
+                res.status(404).send({
+                    message: "Can not find customer with id: " + id
+                });
+            } else res.send(data);
         })
         .catch((error) => {
-            res.send('Error !');
+            res.status(500).send({
+                message: 'Error while fetching a customer !'
+            });
         });
 });
 
 // Update a customer
-router.put("/customers/edit/:id", function (req, res, next) {
+router.put("/customers/:id", function (req, res, next) {
 
     const id = req.params.id;
 
     Customer.update(req.body, {
-        where: {id: id}
-    }).then((data) => {
-        if (data === 1) {
-
-            res.send(data);
-        } else {
-            res.send("Customer has been updated successfully ")
+        where: {
+            id: id
         }
+    }).then((data) => {
+        if (!data) {
+            res.status(404).send({
+                message: `Cannot update customer with id= ${id} !`
+            });
+        } else res.send({
+            message: 'Customer has been updated successfully !'
+        });
     }).catch((err) => {
-        res.send("Error")
+        res.status(500).send({
+            message: 'Error while updating customer !'
+        });
     });
 
 });
 
 // Remove a customer
-router.post("/customers/delete/:id", (req, res, next) => {
+router.delete("/customers/:id", (req, res, next) => {
 
     const id = req.params.id;
     Customer.destroy({
-        where: {id: id},
+        where: {
+            id: id
+        },
     })
         .then((data) => {
-            res.send("Customer has been removed successfully !");
+            if (!data) {
+                res.status(404).send({
+                    message: `Cannot delete customer with id = ${id}. Customer was not found!`
+                });
+            } else res.status(201).send({
+                message: 'Customer has been removed successfully!'
+            });
         })
         .catch((error) => {
-            res.send("Error");
+            res.status(500).send({
+                message: 'Error while removing a customer !'
+            });
         });
 });
 
