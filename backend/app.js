@@ -54,4 +54,11 @@ app.get('/customers/:id', customersRouter);
 app.put('/customers/:id', customersRouter);
 app.delete('/customers/:id', customersRouter);
 
+// Orders apis
+app.get('/orders', ordersRouter);
+app.post('/orders', ordersRouter);
+app.get('/orders/:id', ordersRouter);
+app.put('/orders/:id', ordersRouter);
+app.delete('/orders/:id', ordersRouter);
+
 module.exports = app;

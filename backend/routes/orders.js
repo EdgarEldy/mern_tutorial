@@ -44,10 +44,14 @@ router.post('/orders', (req, res, next) => {
 
     Order.create(order)
         .then((data) => {
-            res.send('A new order has been created successfully !');
+            res.send({
+                message: 'A new order has been created successfully !'
+            });
         })
         .catch((error) => {
-            res.send('Error');
+            res.status(500).send({
+                message: 'Error while creating a category !'
+            });
         });
 });
 
@@ -56,45 +60,66 @@ router.get('/orders/:id', (req, res, next) => {
     const id = req.params.id;
     Order.findByPk(id)
         .then((data) => {
-            res.send(data);
+            if (!data) {
+                res.status(404).send({
+                    message: "Can not found order with id: " + id
+                });
+            } else res.send(data);
         })
         .catch((error) => {
-            res.send('Order not found !');
+            res.status(500).send({
+                message: 'Error while fetching an order !'
+            });
         });
 });
 
 // Update an order
-router.put("/orders/edit/:id", function (req, res, next) {
+router.put("/orders/:id", function (req, res, next) {
 
     const id = req.params.id;
 
     Order.update(req.body, {
-        where: {id: id}
-    }).then((data) => {
-        if (data === 1) {
-
-            res.send(data);
-        } else {
-            res.send("Order has been updated successfully ")
+        where: {
+            id: id
         }
+    }).then((data) => {
+        if (!data) {
+            res.status(404).send({
+                message: `Cannot update order with id= ${id} !`
+            });
+        } else res.send({
+            message: 'Order has been updated successfully !'
+        });
     }).catch((err) => {
-        res.send("Error")
+        res.status(500).send({
+            message: 'Error while updating order !'
+        });
     });
 
 });
 
 // Remove an order
-router.post("/orders/delete/:id", (req, res, next) => {
+router.delete("/orders/:id", (req, res, next) => {
 
     const id = req.params.id;
     Order.destroy({
-        where: {id: id},
+        where: {
+            id: id
+        },
     })
         .then((data) => {
-            res.send("Order has been removed successfully !");
+            if (!data) {
+                res.status(404).send({
+                    message: `Cannot delete order with id = ${id}. Order was not found!`
+                });
+            } else res.status(201).send({
+                message: 'Order has been removed successfully!'
+            });
         })
         .catch((error) => {
-            res.send("Error");
+            res.status(500).send({
+                message: 'Error while removing an order !'
+            });
         });
 });
 
