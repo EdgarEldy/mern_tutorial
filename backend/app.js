@@ -44,23 +44,6 @@ app.delete('/categories/:id', categoriesRouter);
 app.get('/products', productsRouter);
 app.post('/products', productsRouter);
 app.get('/products/:id', productsRouter);
-app.put('/products/edit/:id', productsRouter);
-app.post('/products/delete/:id', productsRouter);
-
-// Customers apis
-app.get('/customers', customersRouter);
-app.post('/customers', customersRouter);
-app.get('/customers/:id', customersRouter);
-app.put('/customers/edit/:id', customersRouter);
-app.post('/customers/delete/:id', customersRouter);
-
-// Orders apis
-app.get('/orders', ordersRouter);
-app.post('/orders', ordersRouter);
-app.get('/orders/:id', ordersRouter);
-app.put('/orders/edit/:id', ordersRouter);
-app.post('/orders/delete/:id', ordersRouter);
-
-app.put('/categories/:id', categoriesRouter);
-app.delete('/categories/:id', categoriesRouter);
+app.put('/products/:id', productsRouter);
+app.delete('/products/:id', productsRouter);
 module.exports = app;
