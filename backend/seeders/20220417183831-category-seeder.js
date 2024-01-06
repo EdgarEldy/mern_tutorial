@@ -11,7 +11,7 @@ module.exports = {
          *   isBetaMember: false
          * }], {});
          */
-        return queryInterface.bulkInsert("categories", [
+        return queryInterface.bulkInsert("Categories", [
             {
                 category_name: "Alcohols",
                 createdAt: new Date(),
@@ -32,5 +32,6 @@ module.exports = {
          * Example:
          * await queryInterface.bulkDelete('People', null, {});
          */
+        await queryInterface.bulkDelete('Categories', null, {});
     }
 };
