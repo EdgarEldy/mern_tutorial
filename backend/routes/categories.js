@@ -11,17 +11,21 @@ router.get('/categories', async (req, res, next) => {
 });
 
 // Add a category end point
-router.post('/categories',(req, res, next) => {
+router.post('/categories', (req, res, next) => {
 
     const category = {
         category_name: req.body.category_name,
     };
 
     Category.create(category).then((data) => {
-        res.send(category.category_name + ' has been created successfully !');
+        res.send({
+            message: category.category_name + ' has been created successfully !'
+        });
     })
         .catch((err) => {
-            res.send('Error');
+            res.status(500).send({
+                message: 'Error while creating a category !'
+            });
         });
 });
 
@@ -30,45 +34,64 @@ router.get('/categories/:id', (req, res, next) => {
     const id = req.params.id;
     Category.findByPk(id)
         .then((data) => {
-            res.send(data);
+            if (!data) {
+                res.status(404).send({
+                    message: "Can not found category with id: " + id
+                });
+            } else res.send(data);
         })
         .catch((error) => {
-            res.send('Category not found');
+            res.status(500).send({
+                message: 'Error while fetching a category !'
+            });
         });
 });
 
 // Update a category
-router.put("/categories/edit/:id", function (req, res, next) {
+router.put("/categories/:id", function (req, res, next) {
 
     const id = req.params.id;
 
     Category.update(req.body, {
-        where: {id: id}
-    }).then((data) => {
-        if (data === 1) {
-
-            res.send(data);
-        } else {
-            res.send("Category has been updated successfully ")
+        where: {
+            id: id
         }
+    }).then((data) => {
+        if (!data) {
+            res.status(404).send({
+                message: `Cannot update category with id= ${id} !`
+            });
+        } else res.send({
+            message: 'Category has been updated successfully !'
+        });
     }).catch((err) => {
-        res.send("Error")
+        res.status(500).send({
+            message: 'Error while updating category !'
+        });
     });
 
 });
 
 // Remove a category
-router.post("/categories/delete/:id", (req, res, next) => {
+router.delete("/categories/:id", (req, res, next) => {
 
     const id = req.params.id;
     Category.destroy({
         where: {id: id},
     })
         .then((data) => {
-            res.send("Category has been removed successfully !");
+            if (!data) {
+                res.status(404).send({
+                    message: `Cannot delete category with id = ${id}. Category was not found!`
+                });
+            } else res.status(201).send({
+                message: 'Category has been deleted successfully!'
+            });
         })
         .catch((error) => {
-            res.send("Error");
+            res.status(500).send({
+                message: 'Error while removing a category !'
+            });
         });
 });
 
