@@ -1,79 +1,111 @@
 function Dashboard() {
-    return (
-        <div>
-            <div className="row">
-                <div className="col-lg-12">
-                    <h1 className="page-header">Dashboard</h1>
+  return (
+    <div id="content">
+      {/* Begin Page Content */}
+      <div className="container-fluid">
+        {/* Content Row */}
+        <div className="row">
+          {/* Earnings (Monthly) Card Example */}
+          <div className="col-xl-3 col-md-6 mb-4">
+            <div className="card border-left-primary shadow h-100 py-2">
+              <div className="card-body">
+                <div className="row no-gutters align-items-center">
+                  <div className="col mr-2">
+                    <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                      Earnings (Monthly)
+                    </div>
+                    <div className="h5 mb-0 font-weight-bold text-gray-800">
+                      $40,000
+                    </div>
+                  </div>
+                  <div className="col-auto">
+                    <i className="fas fa-calendar fa-2x text-gray-300" />
+                  </div>
                 </div>
+              </div>
             </div>
-            <div className="col-xs-12 col-md-6 col-lg-3">
-                <a href>
-                    <div className="panel panel-orange panel-widget">
-                        <div className="row no-padding">
-                            <div className="col-sm-3 col-lg-5 widget-left">
-                                <svg className="glyph table">
-                                    <use xlinkHref="#stroked-table"></use>
-                                </svg>
-                            </div>
-                            <div className="col-sm-9 col-lg-7 widget-right">
-                                <div className="text-muted">Orders</div>
-                            </div>
-                        </div>
+          </div>
+          {/* Earnings (Monthly) Card Example */}
+          <div className="col-xl-3 col-md-6 mb-4">
+            <div className="card border-left-success shadow h-100 py-2">
+              <div className="card-body">
+                <div className="row no-gutters align-items-center">
+                  <div className="col mr-2">
+                    <div className="text-xs font-weight-bold text-success text-uppercase mb-1">
+                      Earnings (Annual)
                     </div>
-                </a>
-            </div>
-            <script type="text/javascript">
-            </script>
-            <div className="col-xs-12 col-md-6 col-lg-3">
-                <a href>
-                    <div className="panel panel-teal panel-widget">
-                        <div className="row no-padding">
-                            <div className="col-sm-3 col-lg-5 widget-left">
-                                <svg className="glyph stroked calendar">
-                                    <use xlinkHref="#stroked-calendar"></use>
-                                </svg>
-                            </div>
-                            <div className="col-sm-9 col-lg-7 widget-right">
-                                <div className="text-muted">Customers</div>
-                            </div>
-                        </div>
+                    <div className="h5 mb-0 font-weight-bold text-gray-800">
+                      $215,000
                     </div>
-                </a>
+                  </div>
+                  <div className="col-auto">
+                    <i className="fas fa-dollar-sign fa-2x text-gray-300" />
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="col-xs-12 col-md-6 col-lg-3">
-                <a href>
-                    <div className="panel panel-blue panel-widget ">
-                        <div className="row no-padding">
-                            <div className="col-sm-3 col-lg-5 widget-left">
-                                <svg className="glyph stroked clock">
-                                    <use xlinkHref="#stroked-clock"></use>
-                                </svg>
-                            </div>
-                            <div className="col-sm-9 col-lg-7 widget-right">
-                                <div className="text-muted">products</div>
-                            </div>
-                        </div>
+          </div>
+          {/* Earnings (Monthly) Card Example */}
+          <div className="col-xl-3 col-md-6 mb-4">
+            <div className="card border-left-info shadow h-100 py-2">
+              <div className="card-body">
+                <div className="row no-gutters align-items-center">
+                  <div className="col mr-2">
+                    <div className="text-xs font-weight-bold text-info text-uppercase mb-1">
+                      Tasks
                     </div>
-                </a>
-            </div>
-            <div className="col-xs-12 col-md-6 col-lg-3">
-                <a href>
-                    <div className="panel panel-red panel-widget">
-                        <div className="row no-padding">
-                            <div className="col-sm-3 col-lg-5 widget-left">
-                                <svg className="glyph stroked male user">
-                                    <use xlinkHref="#stroked-male-user"></use>
-                                </svg>
-                            </div>
-                            <div className="col-sm-9 col-lg-7 widget-right">
-                                <div className="text-muted">Profile</div>
-                            </div>
+                    <div className="row no-gutters align-items-center">
+                      <div className="col-auto">
+                        <div className="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                          50%
                         </div>
+                      </div>
+                      <div className="col">
+                        <div className="progress progress-sm mr-2">
+                          <div
+                            className="progress-bar bg-info"
+                            role="progressbar"
+                            style={{ width: "50%" }}
+                            aria-valuenow={50}
+                            aria-valuemin={0}
+                            aria-valuemax={100}
+                          />
+                        </div>
+                      </div>
                     </div>
-                </a>
+                  </div>
+                  <div className="col-auto">
+                    <i className="fas fa-clipboard-list fa-2x text-gray-300" />
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
+          {/* Pending Requests Card Example */}
+          <div className="col-xl-3 col-md-6 mb-4">
+            <div className="card border-left-warning shadow h-100 py-2">
+              <div className="card-body">
+                <div className="row no-gutters align-items-center">
+                  <div className="col mr-2">
+                    <div className="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                      Pending Requests
+                    </div>
+                    <div className="h5 mb-0 font-weight-bold text-gray-800">
+                      18
+                    </div>
+                  </div>
+                  <div className="col-auto">
+                    <i className="fas fa-comments fa-2x text-gray-300" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-    );
+      </div>
+      {/* /.container-fluid */}
+    </div>
+  );
 }
 
 export default Dashboard;
