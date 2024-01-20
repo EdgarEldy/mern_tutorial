@@ -57,9 +57,9 @@ function SideBar() {
               <a className="collapse-item" href>
                 All
               </a>
-              <a className="collapse-item" href>
+              <Link to="/categories" className="collapse-item">
                 Categories
-              </a>
+              </Link>
             </div>
           </div>
         </li>
