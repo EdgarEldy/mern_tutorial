@@ -12,10 +12,11 @@
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link  rel="stylesheet" href="%PUBLIC_URL%/css/all.css">
     <link  rel="stylesheet" href="%PUBLIC_URL%/css/bootstrap.min.css">
-    <link  rel="stylesheet" href="%PUBLIC_URL%/css/bootstrap-table.css">
-    <link  rel="stylesheet" href="%PUBLIC_URL%/css/styles.css">
-    <link  rel="stylesheet" type="text/css" href="%PUBLIC_URL%/css/fontawesome.min.css">
+    <link  rel="stylesheet" href="%PUBLIC_URL%/css/sb-admin-2.min.css">
+    <link  rel="stylesheet" href="%PUBLIC_URL%/css/dataTables.bootstrap4.min.css">
+    <link  rel="stylesheet" href="%PUBLIC_URL%/css/main.css">
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -40,42 +41,10 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-    <script src="%PUBLIC_URL%/js/jquery-3.4.1.min.js"></script>
-    <script src="%PUBLIC_URL%/js/bootstrap.min.js"></script>
-    <script src="%PUBLIC_URL%/js/bootstrap-datepicker.js"></script>
-    <script src="%PUBLIC_URL%/js/bootstrap-table.js"></script>
-
-    <!--Icons-->
-    <script src="%PUBLIC_URL%/js/lumino.glyphs.js"></script>
-
-    <script>
-        !function ($) {
-            $(document).on("click", "ul.nav li.parent > a > span.icon", function () {
-                $(this).find('em:first').toggleClass("glyphicon-minus");
-            });
-            $(".sidebar span.icon").find('em:first').addClass("glyphicon-plus");
-        }(window.jQuery);
-        $(window).on('resize', function () {
-            if ($(window).width() > 768) $('#sidebar-collapse').collapse('show')
-        })
-        $(window).on('resize', function () {
-            if ($(window).width() <= 767) $('#sidebar-collapse').collapse('hide')
-        })
-    </script>
-    <script>
-        $('#calendar').datepicker({});
-        !function ($) {
-            $(document).on("click", "ul.nav li.parent > a > span.icon", function () {
-                $(this).find('em:first').toggleClass("glyphicon-minus");
-            });
-            $(".sidebar span.icon").find('em:first').addClass("glyphicon-plus");
-        }(window.jQuery);
-        $(window).on('resize', function () {
-            if ($(window).width() > 768) $('#sidebar-collapse').collapse('show')
-        })
-        $(window).on('resize', function () {
-            if ($(window).width() <= 767) $('#sidebar-collapse').collapse('hide')
-        })
-    </script>
+    <script src="%PUBLIC_URL%/js/jquery.min.js"></script>
+    <script src="%PUBLIC_URL%/js/bootstrap.bundle.min.js"></script>
+    <script src="%PUBLIC_URL%/js/dataTables.min.js"></script>
+    <script src="%PUBLIC_URL%/js/dataTables.bootstrap4.min.js"></script>
+    <script src="%PUBLIC_URL%/js/sb-admin-2.min.js"></script>
   </body>
 </html>
