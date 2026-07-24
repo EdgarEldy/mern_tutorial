@@ -37,5 +37,6 @@
   },
   "repository": "https://github.com/EdgarEldy/fullstack_expressjs_reactjs_tutorial.git",
   "author": "Edgar Eldy <ed.eldy21@live.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "packageManager": "yarn@1.22.22"
 }
