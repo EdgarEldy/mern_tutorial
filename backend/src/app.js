@@ -12,9 +12,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// Modules routes are mounted here as they are created, e.g.:
-// const categoriesRouter = require('./modules/categories/categories.routes');
-// app.use('/api/categories', categoriesRouter);
+app.use('/api/categories', require('./modules/categories/category.routes'));
+app.use('/api/products', require('./modules/products/product.routes'));
+app.use('/api/customers', require('./modules/customers/customer.routes'));
+app.use('/api/orders', require('./modules/orders/order.routes'));
 
 app.use(errorMiddleware);
 

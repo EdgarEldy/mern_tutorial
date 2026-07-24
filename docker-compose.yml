@@ -1,6 +1,6 @@
-# Development stack — backend only.
+# Development stack - backend only.
 #
-# MySQL is NOT defined here: the backend connects to your existing
+# MySQL is NOT defined here. The backend connects to your existing
 # MySQL container via the shared 'mern_net' Docker network.
 #
 # One-time setup (run once on your machine):
