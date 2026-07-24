@@ -13,6 +13,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use('/api/categories', require('./modules/categories/category.routes'));
+app.use('/api/products', require('./modules/products/product.routes'));
 
 app.use(errorMiddleware);
 
