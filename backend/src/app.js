@@ -12,9 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// Module routers are mounted here as they are implemented, e.g.:
-// const categoriesRouter = require('./modules/categories/categories.routes');
-// app.use('/api/categories', categoriesRouter);
+app.use('/api/categories', require('./modules/categories/category.routes'));
 
 app.use(errorMiddleware);
 
