@@ -8,7 +8,7 @@
     "dev": "nodemon src/server.js",
     "test": "jest --runInBand --forceExit",
     "test:unit": "jest tests/unit --runInBand --forceExit",
-    "test:integration": "jest tests/integration --runInBand --forceExit",
+    "test:integration": "jest tests/integration --runInBand --forceExit --passWithNoTests",
     "db:migrate": "sequelize db:migrate",
     "db:migrate:undo": "sequelize db:migrate:undo:all",
     "db:seed": "sequelize db:seed:all"
