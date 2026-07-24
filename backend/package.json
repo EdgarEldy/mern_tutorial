@@ -1,27 +1,47 @@
 {
   "name": "backend",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
+  "main": "src/server.js",
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest --runInBand --forceExit",
+    "test:unit": "jest tests/unit --runInBand --forceExit",
+    "test:integration": "jest tests/integration --runInBand --forceExit --passWithNoTests",
+    "db:migrate": "sequelize db:migrate",
+    "db:migrate:undo": "sequelize db:migrate:undo:all",
+    "db:seed": "sequelize db:seed:all"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ]
   },
   "dependencies": {
-    "body-parser": "^1.19.0",
-    "cookie-parser": "~1.4.4",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "debug": "~2.6.9",
-    "express": "~4.16.1",
-    "morgan": "~1.9.1",
-    "mysql2": "^2.3.3",
-    "passport": "^0.5.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "express-validator": "^7.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.14.0",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
-    "sequelize": "^6.9.0"
+    "sequelize": "^6.37.7"
   },
-  "main": "bin/www",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.10",
+    "sequelize-cli": "^6.6.3",
+    "supertest": "^7.1.0"
+  },
   "repository": "https://github.com/EdgarEldy/fullstack_expressjs_reactjs_tutorial.git",
   "author": "Edgar Eldy <ed.eldy21@live.com>",
   "license": "MIT",
-  "devDependencies": {
-    "sequelize-cli": "^6.3.0"
-  }
+  "packageManager": "yarn@1.22.22"
 }

@@ -1,0 +1,32 @@
+# Development stack — backend only.
+#
+# MySQL is NOT defined here: the backend connects to your existing
+# MySQL container via the shared 'mern_net' Docker network.
+#
+# One-time setup (run once on your machine):
+#   docker network create mern_net
+#   docker network connect mern_net <your-mysql-container-name>
+#
+# Then set DB_HOST=<your-mysql-container-name> in backend/.env
+#
+# Start:   docker compose up -d
+# Stop:    docker compose down
+# Logs:    docker compose logs -f backend
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mern_backend
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3001}:3001"
+    env_file:
+      - ./backend/.env
+    networks:
+      - mern_net
+
+networks:
+  mern_net:
+    external: true

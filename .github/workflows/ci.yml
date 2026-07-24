@@ -1,0 +1,92 @@
+name: CI
+
+on:
+  push:
+    branches: [master, develop, 'feature/**']
+  pull_request:
+    branches: [master, develop]
+
+jobs:
+  # ── Backend ────────────────────────────────────────────────────────────────
+  backend:
+    name: Backend — test
+    runs-on: ubuntu-latest
+    if: |
+      contains(github.event.head_commit.modified, 'backend/') ||
+      contains(github.event.head_commit.added, 'backend/') ||
+      github.event_name == 'pull_request'
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ci_password
+          MYSQL_DATABASE: mern_db_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    env:
+      NODE_ENV: test
+      PORT: 3001
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: ci_password
+      DB_NAME: mern_db_test
+      DB_DIALECT: mysql
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: yarn
+          cache-dependency-path: backend/yarn.lock
+
+      - name: Install dependencies
+        working-directory: backend
+        run: yarn install --frozen-lockfile
+
+      - name: Unit tests
+        working-directory: backend
+        run: yarn test:unit
+
+      - name: Integration tests
+        working-directory: backend
+        run: yarn test:integration
+
+  # ── Frontend ───────────────────────────────────────────────────────────────
+  frontend:
+    name: Frontend — build & test
+    runs-on: ubuntu-latest
+    if: |
+      contains(github.event.head_commit.modified, 'frontend/') ||
+      contains(github.event.head_commit.added, 'frontend/') ||
+      github.event_name == 'pull_request'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: yarn
+          cache-dependency-path: frontend/yarn.lock
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: yarn install --frozen-lockfile
+
+      - name: Build
+        working-directory: frontend
+        run: yarn build
+
+      - name: Unit tests
+        working-directory: frontend
+        run: yarn test --passWithNoTests
