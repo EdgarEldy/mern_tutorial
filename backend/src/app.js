@@ -17,6 +17,7 @@ const v1 = express.Router();
 v1.use('/categories', require('./modules/categories/category.routes'));
 v1.use('/products', require('./modules/products/product.routes'));
 v1.use('/customers', require('./modules/customers/customer.routes'));
+v1.use('/orders', require('./modules/orders/order.routes'));
 
 app.use('/api/v1', v1);
 
