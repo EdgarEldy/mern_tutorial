@@ -15,6 +15,7 @@ app.use(cookieParser());
 const v1 = express.Router();
 
 v1.use('/categories', require('./modules/categories/category.routes'));
+v1.use('/products', require('./modules/products/product.routes'));
 
 app.use('/api/v1', v1);
 
