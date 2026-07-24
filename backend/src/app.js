@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// Modules routes are mounted here as they are created, e.g.:
+// Module routers are mounted here as they are implemented, e.g.:
 // const categoriesRouter = require('./modules/categories/categories.routes');
 // app.use('/api/categories', categoriesRouter);
 
