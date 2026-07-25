@@ -1,13 +1,11 @@
-import { Link } from 'react-router-dom';
-
-function CustomerTable({ customers, onDelete }) {
+function CustomerTable({ customers, onNew, onEdit, onDelete }) {
   return (
     <div className="card shadow mb-4">
       <div className="card-header py-3 d-flex justify-content-between align-items-center">
         <h6 className="m-0 font-weight-bold text-primary">Customers</h6>
-        <Link to="/customers/new" className="btn btn-primary btn-sm">
+        <button className="btn btn-primary btn-sm" onClick={onNew}>
           <i className="fas fa-plus fa-sm" /> New
-        </Link>
+        </button>
       </div>
       <div className="card-body">
         <div className="table-responsive">
@@ -31,12 +29,12 @@ function CustomerTable({ customers, onDelete }) {
                   <td>{customer.email}</td>
                   <td>{customer.telephone}</td>
                   <td>
-                    <Link
-                      to={`/customers/${customer.id}/edit`}
+                    <button
                       className="btn btn-warning btn-sm mr-2"
+                      onClick={() => onEdit(customer.id)}
                     >
                       Edit
-                    </Link>
+                    </button>
                     <button
                       className="btn btn-danger btn-sm"
                       onClick={() => onDelete(customer.id)}
