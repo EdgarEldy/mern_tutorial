@@ -55,7 +55,7 @@ describe('useCategories', () => {
     const { result } = renderHook(() => useCategories());
     await waitFor(() => expect(result.current.loading).toBe(false));
     expect(result.current.categories).toHaveLength(1);
-    act(() => { result.current.refetch(); });
+    await act(async () => { result.current.refetch(); });
     await waitFor(() => expect(result.current.categories).toHaveLength(2));
   });
 });
