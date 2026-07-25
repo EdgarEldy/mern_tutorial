@@ -4,6 +4,7 @@ import Dashboard from './pages/Dashboard';
 import { CategoryListPage, CategoryFormPage } from './features/categories';
 import { ProductListPage, ProductFormPage } from './features/products';
 import { CustomerListPage, CustomerFormPage } from './features/customers';
+import { OrderListPage, OrderFormPage } from './features/orders';
 
 function App() {
   return (
@@ -20,6 +21,9 @@ function App() {
           <Route path="customers" element={<CustomerListPage />} />
           <Route path="customers/new" element={<CustomerFormPage />} />
           <Route path="customers/:id/edit" element={<CustomerFormPage />} />
+          <Route path="orders" element={<OrderListPage />} />
+          <Route path="orders/new" element={<OrderFormPage />} />
+          <Route path="orders/:id/edit" element={<OrderFormPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
