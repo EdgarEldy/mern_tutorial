@@ -1,0 +1,82 @@
+.inline {
+  display: inline;
+}
+
+.hidden {
+  display: none;
+}
+
+.vertical-line {
+  display: inline-block;
+  border-left: 1px solid #ccc;
+  margin: 0 10px;
+  height: 125px;
+}
+
+.custom-font-size {
+  font-size: medium;
+  font-weight: bold;
+}
+
+.bg-login {
+  background-color: #659DBD;
+  background-image: linear-gradient(180deg, #ccc 1%, #659DBD 50%, #4e73df 90%);
+  background-size: cover;
+}
+
+.table-borderless th {
+  border-bottom: 1px solid #dee2e6 !important;
+}
+
+/*Redesign Sidebar*/
+.sidebar-dark .sidebar-brand {
+  color: #dd0031;
+}
+
+.sidebar-dark hr.sidebar-divider {
+  border-top: 1px solid rgba(66, 61, 61, 0.78);
+}
+
+.sidebar-dark .nav-item.active .nav-link {
+  color: #5a5c69;
+}
+
+.sidebar-dark .nav-item.active .nav-link i {
+  color: #5a5c69;
+}
+
+.sidebar-dark .sidebar-heading {
+  color: #5a5c69;
+}
+
+.sidebar-dark .nav-item .nav-link {
+  color: #5a5c69;
+}
+
+.sidebar-dark .nav-item .nav-link i {
+  color: #5a5c69;
+}
+
+.sidebar-dark #sidebarToggle {
+  color: #5a5c69;
+}
+
+.sidebar-dark .nav-item .nav-link[data-toggle="collapse"]::after {
+  color: #5a5c69;
+}
+
+.sidebar-dark .nav-item .nav-link:active, .sidebar-dark .nav-item .nav-link:focus, .sidebar-dark .nav-item .nav-link:hover {
+  color: #dd0031;
+}
+
+.sidebar-dark .nav-item .nav-link:active i, .sidebar-dark .nav-item .nav-link:focus i, .sidebar-dark .nav-item .nav-link:hover i {
+  color: #dd0031;
+}
+
+.sidebar-dark #sidebarToggle:hover {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+ngb-modal-backdrop {
+  z-index: 1050 !important;
+}

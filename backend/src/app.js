@@ -14,9 +14,11 @@ app.use(cookieParser());
 
 const v1 = express.Router();
 
-// Module routers are mounted on the versioned router as they are implemented, e.g.:
-// const categoriesRouter = require('./modules/categories/categories.routes');
-// v1.use('/categories', categoriesRouter);
+v1.use('/auth', require('./modules/auth/auth.routes'));
+v1.use('/categories', require('./modules/categories/category.routes'));
+v1.use('/products', require('./modules/products/product.routes'));
+v1.use('/customers', require('./modules/customers/customer.routes'));
+v1.use('/orders', require('./modules/orders/order.routes'));
 
 app.use('/api/v1', v1);
 
