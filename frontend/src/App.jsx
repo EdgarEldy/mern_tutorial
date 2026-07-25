@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import DefaultLayout from './components/layouts/DefaultLayout';
 import Dashboard from './pages/Dashboard';
 import { CategoryListPage } from './features/categories';
-import { ProductListPage, ProductFormPage } from './features/products';
+import { ProductListPage } from './features/products';
 
 function App() {
   return (
@@ -12,8 +12,6 @@ function App() {
           <Route index element={<Dashboard />} />
           <Route path="categories" element={<CategoryListPage />} />
           <Route path="products" element={<ProductListPage />} />
-          <Route path="products/new" element={<ProductFormPage />} />
-          <Route path="products/:id/edit" element={<ProductFormPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
