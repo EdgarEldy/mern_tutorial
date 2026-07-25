@@ -50,4 +50,9 @@ describe('category service', () => {
     await deleteCategory(3);
     expect(axiosInstance.delete).toHaveBeenCalledWith('/categories/3');
   });
+
+  it('propagates Axios rejection to the caller', async () => {
+    axiosInstance.get.mockRejectedValue(new Error('Network error'));
+    await expect(getCategories()).rejects.toThrow('Network error');
+  });
 });
