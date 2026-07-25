@@ -46,4 +46,9 @@ describe('ProductTable', () => {
     await user.click(screen.getAllByRole('button', { name: 'Delete' })[0]);
     expect(onDelete).toHaveBeenCalledWith(1);
   });
+
+  it('shows "No products found." when the products list is empty', () => {
+    render(<ProductTable products={[]} onNew={vi.fn()} onEdit={vi.fn()} onDelete={vi.fn()} />);
+    expect(screen.getByText('No products found.')).toBeInTheDocument();
+  });
 });
