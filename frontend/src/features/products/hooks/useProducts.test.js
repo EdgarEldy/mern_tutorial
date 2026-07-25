@@ -8,11 +8,12 @@ vi.mock('../services/product.service');
 describe('useProducts', () => {
   afterEach(() => vi.clearAllMocks());
 
-  it('starts with loading=true and empty products list', () => {
+  it('starts with loading=true and empty products list', async () => {
     service.getProducts.mockResolvedValue({ data: { data: [] } });
     const { result } = renderHook(() => useProducts());
     expect(result.current.loading).toBe(true);
     expect(result.current.products).toEqual([]);
+    await waitFor(() => expect(result.current.loading).toBe(false));
   });
 
   it('populates products on success', async () => {
@@ -47,7 +48,7 @@ describe('useProducts', () => {
     service.getProducts.mockResolvedValue({ data: { data: items } });
     const { result } = renderHook(() => useProducts());
     await waitFor(() => expect(result.current.loading).toBe(false));
-    await act(async () => { result.current.refetch(); });
+    await act(async () => { await result.current.refetch(); });
     expect(service.getProducts).toHaveBeenCalledTimes(2);
   });
 });
