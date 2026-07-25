@@ -24,10 +24,10 @@ function SideBar() {
           </Link>
         </li>
         <li className="nav-item">
-          <a className="nav-link" href>
+          <Link to="/orders" className="nav-link">
             <i className="fas fa-shopping-cart" />
             <span>Orders</span>
-          </a>
+          </Link>
         </li>
         <li className="nav-item">
           <Link to="/customers" className="nav-link">
