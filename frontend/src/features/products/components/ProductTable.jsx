@@ -20,6 +20,11 @@ function ProductTable({ products, onNew, onEdit, onDelete }) {
               </tr>
             </thead>
             <tbody>
+              {products.length === 0 && (
+                <tr>
+                  <td colSpan="5" className="text-center">No products found.</td>
+                </tr>
+              )}
               {products.map((product) => (
                 <tr key={product.id}>
                   <td>{product.id}</td>
