@@ -69,6 +69,7 @@ describe('Products CRUD', () => {
     stubProducts([...PRODUCTS, newProduct]);
 
     cy.contains('button', 'New').click();
+    cy.wait('@getCategories');
     cy.get('#productName').type('Tablet');
     cy.get('#unitPrice').type('499.99');
     cy.get('#categoryId').select('Electronics');
@@ -86,9 +87,11 @@ describe('Products CRUD', () => {
 
     cy.contains('tr', 'Laptop').contains('button', 'Edit').click();
     cy.wait('@getProductById');
+    cy.wait('@getCategories');
     cy.contains('Edit Product').should('be.visible');
     cy.get('#productName').should('have.value', 'Laptop');
     cy.get('#unitPrice').should('have.value', '999.99');
+    cy.get('#categoryId').should('have.value', '1');
   });
 
   it('updates a product', () => {
@@ -105,6 +108,7 @@ describe('Products CRUD', () => {
 
     cy.contains('tr', 'Laptop').contains('button', 'Edit').click();
     cy.wait('@getProductById');
+    cy.wait('@getCategories');
     cy.get('#productName').clear().type('Laptop Pro');
     cy.get('#unitPrice').clear().type('1099.99');
     cy.contains('button', 'Save').click();
@@ -131,5 +135,24 @@ describe('Products CRUD', () => {
     cy.on('window:confirm', () => false);
     cy.contains('tr', 'Laptop').contains('button', 'Delete').click();
     cy.contains('Laptop').should('be.visible');
+  });
+
+  it('shows an alert when create product fails', () => {
+    cy.intercept('POST', '/api/v1/products', {
+      statusCode: 500,
+      body: { success: false, message: 'Internal server error' },
+    }).as('createProductFail');
+
+    cy.contains('button', 'New').click();
+    cy.wait('@getCategories');
+    cy.get('#productName').type('Broken');
+    cy.get('#unitPrice').type('1');
+    cy.get('#categoryId').select('Electronics');
+
+    cy.on('window:alert', (msg) => {
+      expect(msg).to.eq('Save failed');
+    });
+    cy.contains('button', 'Save').click();
+    cy.wait('@createProductFail');
   });
 });
