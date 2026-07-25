@@ -1,20 +1,23 @@
 # MERN Tutorial
 
-A hands-on walkthrough of building a full-stack CRUD application with **Express 5 / Node.js** (backend) and **React 19 / Vite** (frontend), organized into Git branches that progressively cover the key concepts of the stack. Adapted here with **MySQL** and **Sequelize ORM** instead of MongoDB, and completed with **JWT authentication**.
+A complete, hands-on walkthrough of building a full-stack CRUD application with **Express 5 / Node.js** (backend) and **React 19 / Vite** (frontend), organized into Git branches that progressively cover the key concepts of the stack. Uses **MySQL 8** and **Sequelize ORM** instead of MongoDB, and completed with **JWT + Passport.js** authentication.
 
-The data model follows this EER schema: `categories` -> `products` -> `orders` <- `customers`. A separate `users` table handles authentication.
+The data model follows: `categories` -> `products` -> `orders` <- `customers`, secured by a full JWT authentication system with RBAC.
 
-This document is the **complete specification** of the project and is meant to be followed branch by branch.
+This document is the **complete specification** of the project. It is meant to be followed step by step, branch by branch.
 
-Repository: https://github.com/EdgarEldy/fullstack_expressjs_reactjs_tutorial
+Repository: https://github.com/EdgarEldy/mern_tutorial
 
-## Table of contents
+---
 
-- [Tech stack](#tech-stack)
-- [Data model](#data-model)
-- [Branching strategy](#branching-strategy)
-- [Project structure](#project-structure)
-- [Standard response format](#standard-response-format)
+## Table of Contents
+
+- [Tech Stack](#tech-stack)
+- [Data Model](#data-model)
+- [Branching Strategy](#branching-strategy)
+- [Project Structure](#project-structure)
+- [Standard Response Format](#standard-response-format)
+- [Git Commit Convention](#git-commit-convention)
 - [feature/api/core-architecture](#featureapicore-architecture)
 - [feature/api/categories](#featureapicategories)
 - [feature/api/products](#featureapiproducts)
@@ -27,11 +30,14 @@ Repository: https://github.com/EdgarEldy/fullstack_expressjs_reactjs_tutorial
 - [feature/frontend/customers](#featurefrontendcustomers)
 - [feature/frontend/orders](#featurefrontendorders)
 - [feature/frontend/auth](#featurefrontendauth)
-- [Order of work](#order-of-work)
-- [Code conventions](#code-conventions)
-- [How to follow this tutorial](#how-to-follow-this-tutorial)
+- [Order of Work](#order-of-work)
+- [Code Conventions](#code-conventions)
+- [Concepts Covered](#concepts-covered)
+- [How to Follow This Tutorial](#how-to-follow-this-tutorial)
 
-## Tech stack
+---
+
+## Tech Stack
 
 ### Backend
 
@@ -59,11 +65,13 @@ Repository: https://github.com/EdgarEldy/fullstack_expressjs_reactjs_tutorial
 | Bundler | Vite | ^6.3.0 |
 | Routing | React Router | ^7.6.0 |
 | HTTP Client | Axios | ^1.9.0 |
+| UI Theme | SB Admin 2 (Bootstrap 4) | static |
 | Forms | Formik + Yup | ^2.4.6 / ^1.6.1 |
-| UI Components | React Bootstrap + Bootstrap | ^2.10.9 / ^5.3.3 |
 | Tests | React Testing Library + Cypress | ^16.3.0 / ^14.0.0 |
 
-## Data model
+---
+
+## Data Model
 
 ### Business data
 
@@ -76,11 +84,11 @@ products (id, category_id, product_name, unit_price)
     | 1
     |
     | N
-orders (id, customer_id, product_id, qty, total)
+orders (id, customer_id, product_id, quantity, total)
     | N
     |
     | 1
-customers (id, first_name, last_name, tel, email, address)
+customers (id, first_name, last_name, telephone, email, address)
 ```
 
 ### Auth data (RBAC + token lifecycle)
@@ -93,7 +101,40 @@ users --< role_user >-- roles --< role_permission >-- permissions
   |--< password_reset_tokens
 ```
 
-### Column details
+### Column Details
+
+**categories**
+| Column | Type | Constraints |
+|---|---|---|
+| id | BIGINT | PK, auto-increment |
+| category_name | VARCHAR(255) | NOT NULL |
+
+**products**
+| Column | Type | Constraints |
+|---|---|---|
+| id | BIGINT | PK, auto-increment |
+| category_id | BIGINT | FK -> categories.id, NOT NULL |
+| product_name | VARCHAR(255) | NOT NULL |
+| unit_price | FLOAT | NOT NULL |
+
+**customers**
+| Column | Type | Constraints |
+|---|---|---|
+| id | BIGINT | PK, auto-increment |
+| first_name | VARCHAR(255) | |
+| last_name | VARCHAR(255) | |
+| telephone | VARCHAR(50) | |
+| email | VARCHAR(255) | |
+| address | VARCHAR(255) | |
+
+**orders**
+| Column | Type | Constraints |
+|---|---|---|
+| id | BIGINT | PK, auto-increment |
+| customer_id | BIGINT | FK -> customers.id, NOT NULL |
+| product_id | BIGINT | FK -> products.id, NOT NULL |
+| quantity | INTEGER | NOT NULL |
+| total | DOUBLE | NOT NULL, computed = quantity x unit_price |
 
 **users**
 | Column | Type | Constraints |
@@ -119,13 +160,13 @@ users --< role_user >-- roles --< role_permission >-- permissions
 | resource | VARCHAR(50) | NOT NULL |
 | action | VARCHAR(50) | NOT NULL |
 
-**role_user** (M:M users and roles)
+**role_user** (M:M join table)
 | Column | Type | Constraints |
 |---|---|---|
 | user_id | BIGINT | FK -> users.id, NOT NULL |
 | role_id | BIGINT | FK -> roles.id, NOT NULL |
 
-**role_permission** (M:M roles and permissions)
+**role_permission** (M:M join table)
 | Column | Type | Constraints |
 |---|---|---|
 | role_id | BIGINT | FK -> roles.id, NOT NULL |
@@ -141,7 +182,6 @@ users --< role_user >-- roles --< role_permission >-- permissions
 | blacklisted_at | DATETIME | |
 | created_at | DATETIME | NOT NULL |
 | expires_at | DATETIME | |
-| validated_at | DATETIME | |
 
 **activation_tokens**
 | Column | Type | Constraints |
@@ -162,61 +202,32 @@ users --< role_user >-- roles --< role_permission >-- permissions
 | type | VARCHAR(255) | NOT NULL |
 | expiry_date | DATETIME | NOT NULL |
 
-**categories**
-| Column | Type | Constraints |
-|---|---|---|
-| id | INTEGER | PK, auto-increment |
-| category_name | VARCHAR(255) | NOT NULL |
+---
 
-**products**
-| Column | Type | Constraints |
-|---|---|---|
-| id | INTEGER | PK, auto-increment |
-| category_id | INTEGER | FK -> categories.id, NOT NULL |
-| product_name | VARCHAR(255) | NOT NULL |
-| unit_price | FLOAT | NOT NULL, > 0 |
-
-**customers**
-| Column | Type | Constraints |
-|---|---|---|
-| id | INTEGER | PK, auto-increment |
-| first_name | VARCHAR(255) | NOT NULL |
-| last_name | VARCHAR(255) | NOT NULL |
-| tel | VARCHAR(50) | |
-| email | VARCHAR(255) | valid email format |
-| address | VARCHAR(255) | |
-
-**orders**
-| Column | Type | Constraints |
-|---|---|---|
-| id | INTEGER | PK, auto-increment |
-| customer_id | INTEGER | FK -> customers.id, NOT NULL |
-| product_id | INTEGER | FK -> products.id, NOT NULL |
-| qty | FLOAT | NOT NULL, > 0 |
-| total | FLOAT | NOT NULL, computed as qty x unit_price |
-
-## Branching strategy
+## Branching Strategy
 
 | Branch | Role |
 |---|---|
 | `master` | Stable, production-ready code. No direct commits. Merges from `develop` only. |
-| `develop` | Integration branch. All `feature/*` branches are merged here. |
+| `develop` | Integration branch. All `feature/*` branches are merged here via PR before going to `master`. |
 | `feature/api/core-architecture` | Technical foundation: `src/` structure, config, dependencies, shared utilities, error middleware. |
 | `feature/api/categories` | `Category` module: model, repository, service, controller, routes, validation, tests. |
 | `feature/api/products` | `Product` module with FK relation to `Category`. |
 | `feature/api/customers` | `Customer` module. |
 | `feature/api/orders` | `Order` module with business logic (computed `total`). |
 | `feature/api/auth` | JWT authentication: register, activate, login, logout (blacklist), password reset, RBAC. |
-| `feature/frontend/core-architecture` | React base setup: Vite, routing, Axios instance, Navbar. |
-| `feature/frontend/categories` | `categories` feature: service, hook, components, page. |
-| `feature/frontend/products` | `products` feature. |
+| `feature/frontend/core-architecture` | React base setup: Vite, routing, Axios instance, layout shell. |
+| `feature/frontend/categories` | `categories` feature: service, hook, components, pages, public API. |
+| `feature/frontend/products` | `products` feature with cross-feature `CategorySelect`. |
 | `feature/frontend/customers` | `customers` feature. |
-| `feature/frontend/orders` | `orders` feature with automatic total calculation. |
+| `feature/frontend/orders` | `orders` feature with automatic total calculation and cross-feature selects. |
 | `feature/frontend/auth` | Login and Register pages, protected routes, JWT storage and attachment. |
 
-Each feature is developed on its own branch, then merged into `develop` via a documented pull request.
+Each feature branch ends with a Pull Request to `develop`. Each PR must include atomic commits (one per file).
 
-## Project structure
+---
+
+## Project Structure
 
 ```
 mern_tutorial/
@@ -225,13 +236,13 @@ mern_tutorial/
 │   │   ├── app.js
 │   │   ├── server.js
 │   │   ├── config/
-│   │   │   ├── env.js
-│   │   │   └── database.js
+│   │   │   ├── env.js                    <- single source of truth for process.env reads
+│   │   │   └── database.js               <- runtime Sequelize instance
 │   │   ├── database/
 │   │   │   ├── config/
-│   │   │   │   └── config.js         <- sequelize-cli config (reads .env)
+│   │   │   │   └── config.js             <- sequelize-cli config (reads .env)
 │   │   │   ├── models/
-│   │   │   │   ├── index.js          <- sequelize-cli auto-loader
+│   │   │   │   ├── index.js              <- sequelize-cli auto-loader, runs associate()
 │   │   │   │   ├── user.js
 │   │   │   │   ├── role.js
 │   │   │   │   ├── permission.js
@@ -263,15 +274,27 @@ mern_tutorial/
 │   │   │   │   ├── category.service.js
 │   │   │   │   └── category.validation.js
 │   │   │   ├── products/
+│   │   │   │   ├── product.routes.js
+│   │   │   │   ├── product.controller.js
+│   │   │   │   ├── product.service.js
+│   │   │   │   └── product.validation.js
 │   │   │   ├── customers/
+│   │   │   │   ├── customer.routes.js
+│   │   │   │   ├── customer.controller.js
+│   │   │   │   ├── customer.service.js
+│   │   │   │   └── customer.validation.js
 │   │   │   └── orders/
+│   │   │       ├── order.routes.js
+│   │   │       ├── order.controller.js
+│   │   │       ├── order.service.js
+│   │   │       └── order.validation.js
 │   │   ├── middlewares/
-│   │   │   ├── error.middleware.js
-│   │   │   └── auth.middleware.js    <- JWT verification, protects private routes
+│   │   │   ├── error.middleware.js       <- global error handler, registered last in app.js
+│   │   │   └── auth.middleware.js        <- JWT verification, protects private routes
 │   │   └── shared/
 │   │       └── utils/
-│   │           ├── apiResponse.js
-│   │           └── catchAsync.js
+│   │           ├── apiResponse.js        <- success() / error() response envelope
+│   │           └── catchAsync.js         <- wraps async controllers, forwards to next(err)
 │   ├── tests/
 │   │   ├── unit/
 │   │   └── integration/
@@ -280,37 +303,85 @@ mern_tutorial/
 │   ├── yarn.lock
 │   └── package.json
 ├── frontend/
+│   ├── public/
+│   │   ├── css/                          <- Bootstrap 4, SB Admin 2, FontAwesome (static)
+│   │   └── js/                           <- jQuery, Bootstrap JS, DataTables (static)
 │   ├── src/
-│   │   ├── app/
-│   │   │   ├── App.jsx
-│   │   │   ├── router.jsx
-│   │   │   └── providers.jsx
-│   │   ├── features/
-│   │   │   ├── auth/
-│   │   │   │   ├── services/authApi.js
-│   │   │   │   ├── hooks/useAuth.js
-│   │   │   │   ├── components/LoginForm.jsx
-│   │   │   │   ├── components/RegisterForm.jsx
-│   │   │   │   ├── pages/LoginPage.jsx
-│   │   │   │   ├── pages/RegisterPage.jsx
-│   │   │   │   └── index.js
-│   │   │   ├── categories/
-│   │   │   ├── products/
-│   │   │   ├── customers/
-│   │   │   └── orders/
-│   │   ├── shared/
-│   │   │   └── components/
-│   │   │       ├── Navbar.jsx
-│   │   │       └── ProtectedRoute.jsx
+│   │   ├── main.jsx                      <- React 19 createRoot entry point
+│   │   ├── App.jsx                       <- BrowserRouter + Routes
 │   │   ├── lib/
-│   │   │   └── axios.js
-│   │   └── index.js
+│   │   │   └── axios.js                  <- shared Axios instance (baseURL /api/v1, JWT interceptor)
+│   │   ├── components/
+│   │   │   ├── layouts/
+│   │   │   │   └── DefaultLayout.jsx     <- sidebar + topbar + <Outlet />
+│   │   │   └── partials/
+│   │   │       ├── SideBar.jsx
+│   │   │       ├── TopBar.jsx
+│   │   │       └── Footer.jsx
+│   │   ├── pages/
+│   │   │   └── Dashboard.jsx
+│   │   └── features/
+│   │       ├── categories/
+│   │       │   ├── services/
+│   │       │   │   └── category.service.js
+│   │       │   ├── hooks/
+│   │       │   │   └── useCategories.js
+│   │       │   ├── components/
+│   │       │   │   ├── CategoryTable.jsx
+│   │       │   │   ├── CategoryForm.jsx
+│   │       │   │   └── CategorySelect.jsx  <- exported for ProductForm
+│   │       │   ├── pages/
+│   │       │   │   ├── CategoryListPage.jsx
+│   │       │   │   └── CategoryFormPage.jsx
+│   │       │   └── index.js
+│   │       ├── products/
+│   │       │   ├── services/
+│   │       │   │   └── product.service.js
+│   │       │   ├── hooks/
+│   │       │   │   └── useProducts.js
+│   │       │   ├── components/
+│   │       │   │   ├── ProductTable.jsx
+│   │       │   │   ├── ProductForm.jsx     <- imports CategorySelect from categories
+│   │       │   │   └── ProductSelect.jsx   <- exported for OrderForm
+│   │       │   ├── pages/
+│   │       │   │   ├── ProductListPage.jsx
+│   │       │   │   └── ProductFormPage.jsx
+│   │       │   └── index.js
+│   │       ├── customers/
+│   │       │   ├── services/
+│   │       │   │   └── customer.service.js
+│   │       │   ├── hooks/
+│   │       │   │   └── useCustomers.js
+│   │       │   ├── components/
+│   │       │   │   ├── CustomerTable.jsx
+│   │       │   │   ├── CustomerForm.jsx
+│   │       │   │   └── CustomerSelect.jsx  <- exported for OrderForm
+│   │       │   ├── pages/
+│   │       │   │   ├── CustomerListPage.jsx
+│   │       │   │   └── CustomerFormPage.jsx
+│   │       │   └── index.js
+│   │       └── orders/
+│   │           ├── services/
+│   │           │   └── order.service.js
+│   │           ├── hooks/
+│   │           │   └── useOrders.js
+│   │           ├── components/
+│   │           │   ├── OrderTable.jsx
+│   │           │   └── OrderForm.jsx       <- imports CustomerSelect + ProductSelect
+│   │           ├── pages/
+│   │           │   ├── OrderListPage.jsx
+│   │           │   └── OrderFormPage.jsx
+│   │           └── index.js
+│   ├── index.html
+│   ├── vite.config.js
 │   ├── yarn.lock
 │   └── package.json
 └── README.md
 ```
 
-## Standard response format
+---
+
+## Standard Response Format
 
 Every API response is wrapped in a consistent envelope:
 
@@ -326,6 +397,53 @@ apiResponse.success(res, 'OK', data, 200);
 apiResponse.error(res, 'Not found', 404);
 ```
 
+HTTP status codes: `200` for reads/updates, `201` for creates, `404` for not found, `422` for validation errors.
+
+---
+
+## Git Commit Convention
+
+All commits follow **Conventional Commits** with an atomic rule.
+
+### Format
+
+```
+<type>(<scope>): <short summary>
+
+<body: explain the WHY, the tradeoff, and the educational context>
+```
+
+### Types
+
+| Type | When to use |
+|---|---|
+| `feat` | New feature or file |
+| `fix` | Bug fix |
+| `refactor` | Code change that is neither a bug fix nor a feature |
+| `test` | Adding or updating tests |
+| `docs` | Documentation only |
+| `chore` | Tooling, config, CI, deps |
+
+### Atomic Commit Rule
+
+> **One commit per file added or modified.** Never group unrelated files in a single commit.
+
+**Good:**
+```
+feat(categories): add category.service.js - business logic layer
+
+Delegates all DB access to the repository so the controller stays
+free of query logic. Throws errors as plain objects; the global
+error middleware maps them to HTTP responses.
+```
+
+**Bad:**
+```
+feat: add categories module files
+```
+
+---
+
 ## feature/api/core-architecture
 
 Technical foundation shared by the entire backend. Contains everything that will be reused by every module.
@@ -340,17 +458,15 @@ Technical foundation shared by the entire backend. Contains everything that will
 - [x] Create `src/config/database.js`
 - [x] Create `src/database/config/config.js`
 - [x] Create `src/database/models/index.js`
-- [x] Create `src/database/repositories/` (filled branch by branch)
-- [x] Create `src/database/migrations/` and `src/database/seeders/` (empty folders)
 - [x] Create `src/shared/utils/apiResponse.js`
 - [x] Create `src/shared/utils/catchAsync.js`
 - [x] Create `src/middlewares/error.middleware.js`
 - [x] Create `src/middlewares/auth.middleware.js` (skeleton, implemented in feature/api/auth)
-- [x] Create `src/modules/auth/` (skeleton, implemented in feature/api/auth)
 - [x] Create `src/app.js`
 - [x] Create `src/server.js`
-- [x] Remove old express-generator scaffold files
 - [x] Write unit tests for `apiResponse`, `catchAsync`, `error.middleware`
+
+---
 
 ## feature/api/categories
 
@@ -358,25 +474,27 @@ Technical foundation shared by the entire backend. Contains everything that will
 
 | Method | URL | Description |
 |---|---|---|
-| GET | `/api/categories` | List all categories |
-| GET | `/api/categories/:id` | Get a category by id |
-| POST | `/api/categories` | Create a category |
-| PUT | `/api/categories/:id` | Update a category |
-| DELETE | `/api/categories/:id` | Delete a category |
+| GET | `/api/v1/categories` | List all categories |
+| GET | `/api/v1/categories/:id` | Get a category by id |
+| POST | `/api/v1/categories` | Create a category |
+| PUT | `/api/v1/categories/:id` | Update a category |
+| DELETE | `/api/v1/categories/:id` | Delete a category |
 
 ### Tasks
 
-- [ ] `src/database/models/category.js`
-- [ ] Migration `create-categories`
-- [ ] Categories seeder
-- [ ] `src/database/repositories/category.repository.js`
-- [ ] `src/modules/categories/category.validation.js`
-- [ ] `src/modules/categories/category.service.js`
-- [ ] `src/modules/categories/category.controller.js`
-- [ ] `src/modules/categories/category.routes.js`
-- [ ] Mount router in `src/app.js`
-- [ ] Unit tests for the service (Jest + mocks)
-- [ ] Integration tests for the routes (Supertest)
+- [x] `src/database/models/category.js`
+- [x] Migration `create-categories`
+- [x] Categories seeder
+- [x] `src/database/repositories/category.repository.js`
+- [x] `src/modules/categories/category.validation.js`
+- [x] `src/modules/categories/category.service.js`
+- [x] `src/modules/categories/category.controller.js`
+- [x] `src/modules/categories/category.routes.js`
+- [x] Mount router in `src/app.js`
+- [x] Unit tests for the service (Jest + mocks)
+- [x] Integration tests for the routes (Supertest)
+
+---
 
 ## feature/api/products
 
@@ -384,23 +502,25 @@ Technical foundation shared by the entire backend. Contains everything that will
 
 | Method | URL | Description |
 |---|---|---|
-| GET | `/api/products` | List all products (with category) |
-| GET | `/api/products/:id` | Get a product by id |
-| POST | `/api/products` | Create a product |
-| PUT | `/api/products/:id` | Update a product |
-| DELETE | `/api/products/:id` | Delete a product |
+| GET | `/api/v1/products` | List all products (with nested category) |
+| GET | `/api/v1/products/:id` | Get a product by id |
+| POST | `/api/v1/products` | Create a product |
+| PUT | `/api/v1/products/:id` | Update a product |
+| DELETE | `/api/v1/products/:id` | Delete a product |
 
 ### Tasks
 
-- [ ] `src/database/models/product.js` with `belongsTo Category` association
-- [ ] Migration and seeder for products
-- [ ] `src/database/repositories/product.repository.js` (JOIN with Category)
-- [ ] `src/modules/products/product.validation.js`
-- [ ] `src/modules/products/product.service.js`
-- [ ] `src/modules/products/product.controller.js`
-- [ ] `src/modules/products/product.routes.js`
-- [ ] Mount router in `src/app.js`
-- [ ] Unit tests and integration tests
+- [x] `src/database/models/product.js` with `belongsTo Category` association
+- [x] Migration and seeder for products
+- [x] `src/database/repositories/product.repository.js` (JOIN with Category)
+- [x] `src/modules/products/product.validation.js`
+- [x] `src/modules/products/product.service.js`
+- [x] `src/modules/products/product.controller.js`
+- [x] `src/modules/products/product.routes.js`
+- [x] Mount router in `src/app.js`
+- [x] Unit tests and integration tests
+
+---
 
 ## feature/api/customers
 
@@ -408,23 +528,25 @@ Technical foundation shared by the entire backend. Contains everything that will
 
 | Method | URL | Description |
 |---|---|---|
-| GET | `/api/customers` | List all customers |
-| GET | `/api/customers/:id` | Get a customer by id |
-| POST | `/api/customers` | Create a customer |
-| PUT | `/api/customers/:id` | Update a customer |
-| DELETE | `/api/customers/:id` | Delete a customer |
+| GET | `/api/v1/customers` | List all customers |
+| GET | `/api/v1/customers/:id` | Get a customer by id |
+| POST | `/api/v1/customers` | Create a customer |
+| PUT | `/api/v1/customers/:id` | Update a customer |
+| DELETE | `/api/v1/customers/:id` | Delete a customer |
 
 ### Tasks
 
-- [ ] `src/database/models/customer.js`
-- [ ] Migration and seeder for customers
-- [ ] `src/database/repositories/customer.repository.js`
-- [ ] `src/modules/customers/customer.validation.js`
-- [ ] `src/modules/customers/customer.service.js`
-- [ ] `src/modules/customers/customer.controller.js`
-- [ ] `src/modules/customers/customer.routes.js`
-- [ ] Mount router in `src/app.js`
-- [ ] Unit tests and integration tests
+- [x] `src/database/models/customer.js`
+- [x] Migration and seeder for customers
+- [x] `src/database/repositories/customer.repository.js`
+- [x] `src/modules/customers/customer.validation.js`
+- [x] `src/modules/customers/customer.service.js`
+- [x] `src/modules/customers/customer.controller.js`
+- [x] `src/modules/customers/customer.routes.js`
+- [x] Mount router in `src/app.js`
+- [x] Unit tests and integration tests
+
+---
 
 ## feature/api/orders
 
@@ -432,198 +554,345 @@ Technical foundation shared by the entire backend. Contains everything that will
 
 | Method | URL | Description |
 |---|---|---|
-| GET | `/api/orders` | List all orders (with customer and product) |
-| GET | `/api/orders/:id` | Get an order by id |
-| POST | `/api/orders` | Create an order (total computed automatically) |
-| PUT | `/api/orders/:id` | Update an order |
-| DELETE | `/api/orders/:id` | Delete an order |
+| GET | `/api/v1/orders` | List all orders (with customer and product) |
+| GET | `/api/v1/orders/:id` | Get an order by id |
+| POST | `/api/v1/orders` | Create an order (total computed automatically) |
+| PUT | `/api/v1/orders/:id` | Update an order |
+| DELETE | `/api/v1/orders/:id` | Delete an order |
 
 ### Tasks
 
-- [ ] `src/database/models/order.js` with `belongsTo Customer` and `belongsTo Product` associations
-- [ ] Migration and seeder for orders
-- [ ] `src/database/repositories/order.repository.js` (JOIN with Customer and Product)
-- [ ] `src/modules/orders/order.validation.js`
-- [ ] `src/modules/orders/order.service.js` with business rule: `total = qty x unit_price`
-- [ ] `src/modules/orders/order.controller.js`
-- [ ] `src/modules/orders/order.routes.js`
-- [ ] Mount router in `src/app.js`
-- [ ] Unit tests (total calculation) and integration tests
+- [x] `src/database/models/order.js` with `belongsTo Customer` and `belongsTo Product` associations
+- [x] Migration and seeder for orders
+- [x] `src/database/repositories/order.repository.js` (JOIN with Customer and Product)
+- [x] `src/modules/orders/order.validation.js`
+- [x] `src/modules/orders/order.service.js` with business rule: `total = quantity x unit_price`
+- [x] `src/modules/orders/order.controller.js`
+- [x] `src/modules/orders/order.routes.js`
+- [x] Mount router in `src/app.js`
+- [x] Unit tests (total calculation) and integration tests
+
+---
 
 ## feature/api/auth
 
-JWT authentication with RBAC (Role-Based Access Control), full token lifecycle management (blacklist on logout), account activation, and password reset. Based on the EER diagram `EER (2).png`.
+JWT authentication with RBAC, full token lifecycle management (blacklist on logout), account activation, and password reset.
 
 ### Endpoints
 
 | Method | URL | Auth required | Description |
 |---|---|---|---|
-| POST | `/api/auth/register` | No | Create an account (enabled=false, sends activation token) |
-| GET | `/api/auth/activate/:token` | No | Activate the account (sets enabled=true) |
-| POST | `/api/auth/login` | No | Authenticate and receive a JWT |
-| POST | `/api/auth/logout` | Yes | Blacklist the current JWT |
-| GET | `/api/auth/me` | Yes | Return the authenticated user with roles |
-| POST | `/api/auth/forgot-password` | No | Send a password reset token |
-| POST | `/api/auth/reset-password/:token` | No | Set a new password |
+| POST | `/api/v1/auth/register` | No | Create an account (enabled=false, sends activation token) |
+| GET | `/api/v1/auth/activate/:token` | No | Activate the account (sets enabled=true) |
+| POST | `/api/v1/auth/login` | No | Authenticate and receive a JWT |
+| POST | `/api/v1/auth/logout` | Yes | Blacklist the current JWT |
+| GET | `/api/v1/auth/me` | Yes | Return the authenticated user with roles |
+| POST | `/api/v1/auth/forgot-password` | No | Send a password reset token |
+| POST | `/api/v1/auth/reset-password/:token` | No | Set a new password |
 
 ### JWT flow with blacklist
 
 ```
-Client -> POST /api/auth/login -> { token: "eyJ..." }
-Client -> GET /api/categories (Authorization: Bearer eyJ...) -> 200 OK
-Client -> POST /api/auth/logout (Authorization: Bearer eyJ...) -> token blacklisted
-Client -> GET /api/categories (Authorization: Bearer eyJ...) -> 401 Unauthorized
+Client -> POST /api/v1/auth/login   -> { token: "eyJ..." }
+Client -> GET  /api/v1/categories   (Authorization: Bearer eyJ...) -> 200 OK
+Client -> POST /api/v1/auth/logout  (Authorization: Bearer eyJ...) -> token blacklisted
+Client -> GET  /api/v1/categories   (Authorization: Bearer eyJ...) -> 401 Unauthorized
 ```
 
 ### RBAC
 
 ```
-Admin user  -> ADMIN role  -> permissions [categories:write, products:write, ...]
+Admin user   -> ADMIN role -> permissions [categories:write, products:write, ...]
 Regular user -> USER role  -> permissions [categories:read, products:read, ...]
 ```
 
 ### Tasks
 
 **Models and migrations**
-- [ ] `src/database/models/user.js` with first_name, last_name, email, password, enabled, account_locked
-- [ ] `src/database/models/role.js`
-- [ ] `src/database/models/permission.js`
-- [ ] `src/database/models/blacklistedToken.js`
-- [ ] `src/database/models/activationToken.js`
-- [ ] `src/database/models/passwordResetToken.js`
-- [ ] Associations: User belongsToMany Role via role_user, Role belongsToMany Permission via role_permission
-- [ ] Migrations for all auth tables
-- [ ] Seeder: ADMIN and USER roles, CRUD permissions per resource
+- [x] `src/database/models/user.js`
+- [x] `src/database/models/role.js`
+- [x] `src/database/models/permission.js`
+- [x] `src/database/models/blacklistedToken.js`
+- [x] `src/database/models/activationToken.js`
+- [x] `src/database/models/passwordResetToken.js`
+- [x] Associations: User belongsToMany Role, Role belongsToMany Permission
+- [x] Migrations for all auth tables
+- [x] Seeder: ADMIN and USER roles, CRUD permissions per resource
 
 **Repositories**
-- [ ] `src/database/repositories/user.repository.js`
-- [ ] `src/database/repositories/token.repository.js` (blacklist + activation + reset)
+- [x] `src/database/repositories/user.repository.js`
+- [x] `src/database/repositories/token.repository.js`
 
 **Auth module**
-- [ ] `src/modules/auth/auth.validation.js`
-- [ ] `src/modules/auth/auth.service.js` with bcrypt, jwt.sign, blacklist check, RBAC check
-- [ ] `src/modules/auth/auth.controller.js`
-- [ ] `src/modules/auth/auth.routes.js`
+- [x] `src/modules/auth/auth.validation.js`
+- [x] `src/modules/auth/auth.service.js`
+- [x] `src/modules/auth/auth.controller.js`
+- [x] `src/modules/auth/auth.routes.js`
 
 **Infrastructure**
-- [ ] Implement `src/middlewares/auth.middleware.js` with passport-jwt strategy and blacklist check
-- [ ] `src/config/passport.js` to configure the passport-jwt strategy
-- [ ] Mount router in `src/app.js`
+- [x] Implement `src/middlewares/auth.middleware.js` with passport-jwt strategy and blacklist check
+- [x] `src/config/passport.js`
+- [x] Mount router in `src/app.js`
 
 **Tests**
 - [ ] Unit tests for service (bcrypt, jwt, RBAC)
 - [ ] Integration tests: register / activate / login / logout / me / reset
 
+---
+
 ## feature/frontend/core-architecture
 
-React base setup with Vite. Everything the feature branches will need: routing, configured Axios instance, layout, and protected route component.
+React base setup with Vite. Everything the feature branches need: routing, configured Axios instance, layout shell, and shared partials.
 
 ### Tasks
 
-- [ ] Initialize Vite + React 19
-- [ ] Install Bootstrap, React Router, Axios, Formik, Yup, React Bootstrap
-- [ ] Create `src/lib/axios.js` with configured baseURL and JWT interceptor
-- [ ] Create `src/app/App.jsx`, `src/app/router.jsx`, `src/app/providers.jsx`
-- [ ] Create `src/shared/components/Navbar.jsx`
-- [ ] Create `src/shared/components/ProtectedRoute.jsx` (skeleton)
-- [ ] Update `src/index.js`
+- [x] Initialize Vite + React 19
+- [x] Install React Router, Axios
+- [x] Configure Vite proxy: `/api` -> `http://localhost:3001`
+- [x] Create `src/lib/axios.js` with baseURL `/api/v1` and JWT Bearer interceptor
+- [x] Create `src/App.jsx` with BrowserRouter + Routes
+- [x] Create `src/main.jsx` with React 19 createRoot
+- [x] Create `src/components/layouts/DefaultLayout.jsx`
+- [x] Create `src/components/partials/SideBar.jsx`
+- [x] Create `src/components/partials/TopBar.jsx`
+- [x] Create `src/components/partials/Footer.jsx`
+- [x] Create `src/pages/Dashboard.jsx`
+- [x] Add Bootstrap 4 / SB Admin 2 static assets to `public/`
+
+---
 
 ## feature/frontend/categories
 
+### Routes
+
+| Path | Component | Description |
+|---|---|---|
+| `/categories` | `CategoryListPage` | Table of all categories |
+| `/categories/new` | `CategoryFormPage` | Create form |
+| `/categories/:id/edit` | `CategoryFormPage` | Edit form (pre-filled) |
+
 ### Tasks
 
-- [ ] `src/features/categories/services/categoryApi.js`
-- [ ] `src/features/categories/hooks/useCategories.js`
-- [ ] `src/features/categories/components/CategoryList.jsx`
-- [ ] `src/features/categories/components/CategoryForm.jsx` with Formik + Yup
-- [ ] `src/features/categories/pages/CategoriesPage.jsx`
-- [ ] `src/features/categories/index.js`
-- [ ] Add `/categories` route in `router.jsx`
-- [ ] Unit tests for hook and components
+- [x] `src/features/categories/services/category.service.js`
+- [x] `src/features/categories/hooks/useCategories.js`
+- [x] `src/features/categories/components/CategoryTable.jsx`
+- [x] `src/features/categories/components/CategoryForm.jsx`
+- [x] `src/features/categories/components/CategorySelect.jsx` (exported for ProductForm)
+- [x] `src/features/categories/pages/CategoryListPage.jsx`
+- [x] `src/features/categories/pages/CategoryFormPage.jsx`
+- [x] `src/features/categories/index.js`
+- [x] Wire routes in `src/App.jsx`
+- [x] Update SideBar.jsx Categories link
+
+---
 
 ## feature/frontend/products
 
+### Routes
+
+| Path | Component | Description |
+|---|---|---|
+| `/products` | `ProductListPage` | Table with category column |
+| `/products/new` | `ProductFormPage` | Create form |
+| `/products/:id/edit` | `ProductFormPage` | Edit form (pre-filled) |
+
 ### Tasks
 
-- [ ] Service, hook, components, and page for `products`
-- [ ] `ProductForm` with category select (cross-feature imports allowed in Form components)
-- [ ] Add `/products` route in `router.jsx`
-- [ ] Tests
+- [x] `src/features/products/services/product.service.js`
+- [x] `src/features/products/hooks/useProducts.js`
+- [x] `src/features/products/components/ProductTable.jsx`
+- [x] `src/features/products/components/ProductForm.jsx` (imports `CategorySelect` from categories)
+- [x] `src/features/products/components/ProductSelect.jsx` (exported for OrderForm)
+- [x] `src/features/products/pages/ProductListPage.jsx`
+- [x] `src/features/products/pages/ProductFormPage.jsx`
+- [x] `src/features/products/index.js`
+- [x] Wire routes in `src/App.jsx`
+- [x] Update SideBar.jsx Products link
+
+---
 
 ## feature/frontend/customers
 
+### Routes
+
+| Path | Component | Description |
+|---|---|---|
+| `/customers` | `CustomerListPage` | Table with all customer fields |
+| `/customers/new` | `CustomerFormPage` | Create form |
+| `/customers/:id/edit` | `CustomerFormPage` | Edit form (pre-filled) |
+
 ### Tasks
 
-- [ ] Service, hook, components, and page for `customers`
-- [ ] Add `/customers` route in `router.jsx`
-- [ ] Tests
+- [x] `src/features/customers/services/customer.service.js`
+- [x] `src/features/customers/hooks/useCustomers.js`
+- [x] `src/features/customers/components/CustomerTable.jsx`
+- [x] `src/features/customers/components/CustomerForm.jsx`
+- [x] `src/features/customers/components/CustomerSelect.jsx` (exported for OrderForm)
+- [x] `src/features/customers/pages/CustomerListPage.jsx`
+- [x] `src/features/customers/pages/CustomerFormPage.jsx`
+- [x] `src/features/customers/index.js`
+- [x] Wire routes in `src/App.jsx`
+- [x] Update SideBar.jsx Customers link
+
+---
 
 ## feature/frontend/orders
 
+### Routes
+
+| Path | Component | Description |
+|---|---|---|
+| `/orders` | `OrderListPage` | Table with customer, product, quantity, total |
+| `/orders/new` | `OrderFormPage` | Create form with live total preview |
+| `/orders/:id/edit` | `OrderFormPage` | Edit form (pre-filled) |
+
 ### Tasks
 
-- [ ] Service, hook, components, and page for `orders`
-- [ ] `OrderForm` with customer select, product select, and automatic `total = qty x unit_price` calculation
-- [ ] Add `/orders` route in `router.jsx`
-- [ ] Cypress e2e tests
+- [x] `src/features/orders/services/order.service.js`
+- [x] `src/features/orders/hooks/useOrders.js`
+- [x] `src/features/orders/components/OrderTable.jsx`
+- [x] `src/features/orders/components/OrderForm.jsx` (imports `CustomerSelect` + `ProductSelect`, computes `total = quantity x unit_price` live)
+- [x] `src/features/orders/pages/OrderListPage.jsx`
+- [x] `src/features/orders/pages/OrderFormPage.jsx`
+- [x] `src/features/orders/index.js`
+- [x] Wire routes in `src/App.jsx`
+- [x] Update SideBar.jsx Orders link
+
+---
 
 ## feature/frontend/auth
 
+### Routes
+
+| Path | Component | Description |
+|---|---|---|
+| `/login` | `LoginPage` | Login form |
+| `/register` | `RegisterPage` | Register form |
+
 ### Tasks
 
-- [ ] `src/features/auth/services/authApi.js` with register / login / me calls
-- [ ] `src/features/auth/hooks/useAuth.js` with token management (localStorage) and user state
-- [ ] `src/features/auth/components/LoginForm.jsx` with Formik + Yup
+- [ ] `src/features/auth/services/auth.service.js` (register / login / me)
+- [ ] `src/features/auth/hooks/useAuth.js` (token management in localStorage, user state)
+- [ ] `src/features/auth/components/LoginForm.jsx`
 - [ ] `src/features/auth/components/RegisterForm.jsx`
 - [ ] `src/features/auth/pages/LoginPage.jsx`
 - [ ] `src/features/auth/pages/RegisterPage.jsx`
 - [ ] `src/features/auth/index.js`
-- [ ] Implement `src/shared/components/ProtectedRoute.jsx` to redirect unauthenticated users
-- [ ] Update the Axios interceptor in `src/lib/axios.js` to attach the JWT header
-- [ ] Protect private routes in `router.jsx`
-- [ ] Unit tests for hook and components
+- [ ] Create `src/components/ProtectedRoute.jsx` to redirect unauthenticated users
+- [ ] Update `src/lib/axios.js` interceptor (already in place)
+- [ ] Wrap private routes in `ProtectedRoute` in `src/App.jsx`
 
-## Order of work
+---
 
-1. `feature/api/core-architecture` -> merge `develop`
-2. `feature/api/categories` -> merge `develop`
-3. `feature/api/products` -> merge `develop`
-4. `feature/api/customers` -> merge `develop`
-5. `feature/api/orders` -> merge `develop`
-6. `feature/api/auth` -> merge `develop`
-7. `feature/frontend/core-architecture` -> merge `develop`
-8. `feature/frontend/categories` -> merge `develop`
-9. `feature/frontend/products` -> merge `develop`
-10. `feature/frontend/customers` -> merge `develop`
-11. `feature/frontend/orders` -> merge `develop`
-12. `feature/frontend/auth` -> merge `develop`
-13. `develop` -> `master` once everything is validated
+## Order of Work
 
-## Code conventions
+```
+1.  feature/api/core-architecture          -> PR to develop  (done)
+2.  feature/api/categories                 -> PR to develop  (done)
+3.  feature/api/products                   -> PR to develop  (done)
+4.  feature/api/customers                  -> PR to develop  (done)
+5.  feature/api/orders                     -> PR to develop  (done)
+6.  feature/api/auth                       -> PR to develop  (done)
+7.  feature/frontend/core-architecture     -> PR to develop  (done)
+8.  feature/frontend/categories            -> PR to develop  (done)
+9.  feature/frontend/products              -> PR to develop  (done)
+10. feature/frontend/customers             -> PR to develop  (done)
+11. feature/frontend/orders                -> PR to develop  (done)
+12. feature/frontend/auth                  -> PR to develop  (TODO)
+13. develop                                -> master once everything is validated
+```
+
+Each branch is created from the tip of `develop`:
+
+```bash
+git checkout develop
+git pull origin develop
+git checkout -b feature/<name>
+```
+
+---
+
+## Code Conventions
 
 ### Backend
 
-- Request flow: `Route -> auth.middleware (optional) -> validation -> Controller -> Service -> Repository -> DB`
+- **Request flow:** `Route -> auth.middleware (optional) -> validation -> Controller -> Service -> Repository -> DB`
 - The **repository** is the only layer allowed to access the database
 - The **service** holds pure business logic with no `req` or `res` references
 - The **controller** only handles `req`/`res` and delegates to the service
-- Always use `catchAsync` in controllers (no manual `try/catch`)
+- Always use `catchAsync` in controllers (no manual `try/catch` in controllers)
 - All responses go through `success()` or `error()` from `apiResponse.js`
-- Atomic commits: one commit per file created or modified, using conventional format
+- Atomic commits: one commit per file created or modified
 
 ### Frontend
 
-- One feature = one self-contained folder in `src/features/`
-- The hook is the only layer allowed to call the API service
-- Components receive data and callbacks as props, with no direct API calls
-- Cross-feature imports are allowed only in `Form` components (e.g. category select inside `ProductForm`)
+- **Feature layout:** each feature is self-contained in `src/features/<resource>/`
+- **Services** call the API (Axios calls only, no state)
+- **Hooks** call the service and manage state (fetch-on-mount, expose refetch)
+- **Components** receive data and callbacks as props -- no direct API calls
+- **Pages** orchestrate data (use hooks), handle delete callbacks, render components
+- Cross-feature imports are allowed **only in Form components** (e.g., `CategorySelect` inside `ProductForm`)
+- The public API of each feature is exposed via `index.js` only
 
-## How to follow this tutorial
+---
 
-1. Clone the repository and switch to `develop`
-2. Start MySQL locally and create the `mern_db` database
-3. Copy `backend/.env.example` to `backend/.env` and fill in your credentials
-4. Check out `feature/api/core-architecture` and follow its task checklist
-5. Continue branch by branch in the order defined above
-6. Start the backend: `cd backend && yarn dev` -> `http://localhost:3001`
-7. Start the frontend: `cd frontend && yarn dev` -> `http://localhost:5173`
+## Concepts Covered
+
+**Backend architecture**
+- Layered architecture: Route -> Controller -> Service -> Repository -> DB
+- Express 5 async error handling with `catchAsync`
+- Sequelize ORM: models, associations, migrations, seeders
+- express-validator for input validation
+- Consistent API response envelope
+
+**Authentication and security**
+- Passport.js + JWT (stateless authentication)
+- Token blacklisting (explicit logout via `jti`)
+- Role-based access control (ADMIN, USER)
+- Fine-grained permissions (resource + action)
+- Account activation and password reset flows
+- `bcryptjs` password hashing
+
+**Frontend architecture**
+- Feature-based folder structure (`src/features/<resource>/`)
+- Separation of concerns: services / hooks / components / pages
+- Custom data-fetching hooks with fetch-on-mount pattern
+- Controlled forms with local state
+- Cross-feature reuse via exported Select components
+- Client-side routing with React Router v7
+- Axios instance with base URL and JWT interceptor
+
+**Developer workflow**
+- Git branching strategy (master <- develop <- feature/*)
+- Conventional Commits with atomic rule
+- Pull Request workflow with task checklists
+
+---
+
+## How to Follow This Tutorial
+
+```bash
+# 1. Clone and set up
+git clone https://github.com/EdgarEldy/mern_tutorial.git
+cd mern_tutorial
+
+# 2. Backend
+cd backend
+cp .env.example .env          # fill in DB credentials
+yarn install
+yarn db:migrate
+yarn db:seed
+yarn dev                       # http://localhost:3001
+
+# 3. Frontend (new terminal)
+cd frontend
+yarn install
+yarn dev                       # http://localhost:5173
+```
+
+Work through branches in the [Order of Work](#order-of-work). At the end of each branch:
+
+1. Complete every item in its Tasks list
+2. Ensure all atomic commits are in place (one per file)
+3. Open a Pull Request to `develop`
+4. Merge to `develop`, then merge `develop` to `master`
