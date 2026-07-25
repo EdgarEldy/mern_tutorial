@@ -24,6 +24,7 @@ Repository: https://github.com/EdgarEldy/mern_tutorial
 - [feature/api/customers](#featureapicustomers)
 - [feature/api/orders](#featureapiorders)
 - [feature/api/auth](#featureapiauth)
+- [GraphQL](#graphql)
 - [feature/frontend/core-architecture](#featurefrontendcore-architecture)
 - [feature/frontend/categories](#featurefrontendcategories)
 - [feature/frontend/products](#featurefrontendproducts)
@@ -53,6 +54,7 @@ Repository: https://github.com/EdgarEldy/mern_tutorial
 | JWT | jsonwebtoken | ^9.0.2 |
 | Password hashing | bcryptjs | ^3.0.2 |
 | Environment | dotenv | ^16.5.0 |
+| GraphQL | Apollo Server 5 + @as-integrations/express5 | ^5.0.0 / ^1.1.2 |
 | Tests | Jest + Supertest | ^29.7.0 / ^7.1.0 |
 | Dev server | nodemon | ^3.1.10 |
 | Package manager | yarn | 1.22.22 |
@@ -288,6 +290,14 @@ mern_tutorial/
 │   │   │       ├── order.controller.js
 │   │   │       ├── order.service.js
 │   │   │       └── order.validation.js
+│   │   ├── graphql/
+│   │   │   ├── schema.js                 <- assembles typeDefs + resolvers arrays for ApolloServer
+│   │   │   ├── typeDefs/
+│   │   │   │   ├── base.typeDefs.js      <- root Query and Mutation types (_health, _empty)
+│   │   │   │   └── order.typeDefs.js     <- Order, Customer, Product, Category + CRUD extensions
+│   │   │   └── resolvers/
+│   │   │       ├── base.resolvers.js     <- _health resolver
+│   │   │       └── order.resolvers.js    <- delegates to order.service (not repository directly)
 │   │   ├── middlewares/
 │   │   │   ├── error.middleware.js       <- global error handler, registered last in app.js
 │   │   │   └── auth.middleware.js        <- JWT verification, protects private routes
@@ -465,6 +475,11 @@ Technical foundation shared by the entire backend. Contains everything that will
 - [x] Create `src/app.js`
 - [x] Create `src/server.js`
 - [x] Write unit tests for `apiResponse`, `catchAsync`, `error.middleware`
+- [x] Install `@apollo/server@^5.0.0`, `@as-integrations/express5`, `graphql@^16.9.0`
+- [x] Create `src/graphql/typeDefs/base.typeDefs.js` - root Query (`_health`) and Mutation (`_empty`)
+- [x] Create `src/graphql/resolvers/base.resolvers.js` - `_health` returns `"OK"`
+- [x] Create `src/graphql/schema.js` - exports `{ typeDefs, resolvers }` arrays for ApolloServer
+- [x] Update `src/server.js` - start ApolloServer before `httpServer.listen`, mount at `/api/v1/graphql`
 
 ---
 
@@ -571,6 +586,55 @@ Technical foundation shared by the entire backend. Contains everything that will
 - [x] `src/modules/orders/order.routes.js`
 - [x] Mount router in `src/app.js`
 - [x] Unit tests (total calculation) and integration tests
+- [x] `src/graphql/typeDefs/order.typeDefs.js` - Order, Customer, Product, Category types + CRUD operations
+- [x] `src/graphql/resolvers/order.resolvers.js` - delegates to order.service (total recalculated on mutation)
+- [x] Update `src/graphql/schema.js` to include order typeDefs and resolvers
+
+### GraphQL Operations (Orders)
+
+All operations are available at `POST /api/v1/graphql`.
+
+#### Queries
+
+```graphql
+query {
+  orders {
+    id
+    quantity
+    total
+    customer { first_name last_name email }
+    product  { product_name unit_price category { category_name } }
+  }
+}
+
+query {
+  order(id: "1") {
+    id quantity total
+    customer { first_name }
+    product  { product_name unit_price }
+  }
+}
+```
+
+#### Mutations
+
+```graphql
+mutation {
+  createOrder(input: { customer_id: "1", product_id: "1", quantity: 2 }) {
+    id total
+  }
+}
+
+mutation {
+  updateOrder(id: "1", input: { quantity: 5 }) {
+    id total
+  }
+}
+
+mutation {
+  deleteOrder(id: "1")
+}
+```
 
 ---
 
@@ -637,6 +701,89 @@ Regular user -> USER role  -> permissions [categories:read, products:read, ...]
 **Tests**
 - [ ] Unit tests for service (bcrypt, jwt, RBAC)
 - [ ] Integration tests: register / activate / login / logout / me / reset
+
+---
+
+## GraphQL
+
+Apollo Server 5 is mounted at `POST /api/v1/graphql`. In development mode, visiting the endpoint in a browser opens the **Apollo Sandbox** - an interactive explorer to write and run operations without any extra tool.
+
+### Architecture
+
+The GraphQL layer reuses the existing service and repository modules. No separate data access code was written.
+
+```
+ApolloServer (server.js)
+  schema.js  <-- assembles typeDefs[] and resolvers[]
+    base.typeDefs.js    "type Query { _health }"  "type Mutation { _empty }"
+    base.resolvers.js   _health: () => "OK"
+    order.typeDefs.js   Order, Customer, Product, Category + extend Query/Mutation
+    order.resolvers.js  calls order.service (same total-calculation logic as REST)
+```
+
+### Startup Sequence
+
+`server.js` performs these steps in order:
+
+1. Sequelize authenticates the DB connection
+2. `http.createServer(app)` creates the Node HTTP server
+3. `await apolloServer.start()` validates the schema, initializes plugins
+4. `expressMiddleware(apolloServer)` is applied at `/api/v1/graphql`
+5. `httpServer.listen(PORT)` starts accepting connections
+
+`ApolloServerPluginDrainHttpServer` is registered so that in-flight GraphQL requests complete before the server shuts down.
+
+### Schema Extension Pattern
+
+Each feature module extends the root types declared in `base.typeDefs.js`:
+
+```graphql
+extend type Query {
+  orders: [Order!]!
+  order(id: ID!): Order
+}
+
+extend type Mutation {
+  createOrder(input: CreateOrderInput!): Order!
+}
+```
+
+When adding a new module (e.g., products GraphQL), push its typeDefs and resolvers into the arrays in `schema.js`:
+
+```js
+module.exports = {
+  typeDefs: [baseTypeDefs, orderTypeDefs, productTypeDefs],
+  resolvers: [baseResolvers, orderResolvers, productResolvers],
+};
+```
+
+Apollo Server merges the arrays automatically.
+
+### Nested Types and Sequelize
+
+The `order.repository.js` eager-loads `customer` and `product` (with `category`) on every query. The Sequelize model instances returned expose these as direct properties, so GraphQL field resolution works without custom field resolvers:
+
+```
+order.customer.first_name   -> Customer.first_name
+order.product.product_name  -> Product.product_name
+order.product.unit_price    -> Product.unit_price
+order.product.category.category_name -> Category.category_name
+```
+
+The field names in `order.typeDefs.js` match the Sequelize column names exactly to make this work.
+
+### Service Reuse
+
+`order.resolvers.js` calls `order.service` functions, not the repository directly:
+
+```js
+Mutation: {
+  createOrder: (_, { input }) => orderService.createOrder(input),
+  updateOrder: (_, { id, input }) => orderService.updateOrder(id, input),
+}
+```
+
+This means `total = quantity * unit_price` is computed identically whether the request arrives via REST (`POST /api/v1/orders`) or GraphQL (`mutation { createOrder(...) }`).
 
 ---
 
