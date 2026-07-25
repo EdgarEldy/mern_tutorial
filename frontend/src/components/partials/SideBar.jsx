@@ -54,9 +54,9 @@ function SideBar() {
             data-parent="#accordionSidebar"
           >
             <div className="bg-white py-2 collapse-inner rounded">
-              <a className="collapse-item" href>
+              <Link to="/products" className="collapse-item">
                 All
-              </a>
+              </Link>
               <Link to="/categories" className="collapse-item">
                 Categories
               </Link>
