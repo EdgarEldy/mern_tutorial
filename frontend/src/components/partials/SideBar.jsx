@@ -24,16 +24,16 @@ function SideBar() {
           </Link>
         </li>
         <li className="nav-item">
-          <a className="nav-link" href>
+          <Link to="/orders" className="nav-link">
             <i className="fas fa-shopping-cart" />
             <span>Orders</span>
-          </a>
+          </Link>
         </li>
         <li className="nav-item">
-          <a className="nav-link" href>
+          <Link to="/customers" className="nav-link">
             <i className="fas fa-fw fa-users" />
             <span>Customers</span>
-          </a>
+          </Link>
         </li>
         <li className="nav-item">
           <a
@@ -54,12 +54,12 @@ function SideBar() {
             data-parent="#accordionSidebar"
           >
             <div className="bg-white py-2 collapse-inner rounded">
-              <a className="collapse-item" href>
+              <Link to="/products" className="collapse-item">
                 All
-              </a>
-              <a className="collapse-item" href>
+              </Link>
+              <Link to="/categories" className="collapse-item">
                 Categories
-              </a>
+              </Link>
             </div>
           </div>
         </li>
