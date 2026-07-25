@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { CategorySelect } from '../../categories';
 import useCategories from '../../categories/hooks/useCategories';
 
-function ProductForm({ initialValues, onSubmit, loading }) {
+function ProductForm({ initialValues, onSubmit, onCancel, loading }) {
   const [productName, setProductName] = useState(initialValues?.product_name ?? '');
   const [unitPrice, setUnitPrice] = useState(initialValues?.unit_price ?? '');
   const [categoryId, setCategoryId] = useState(initialValues?.category_id ?? '');
@@ -46,12 +45,14 @@ function ProductForm({ initialValues, onSubmit, loading }) {
         />
       </div>
       <CategorySelect value={categoryId} onChange={setCategoryId} categories={categories} />
-      <button type="submit" className="btn btn-primary mr-2" disabled={loading}>
-        {loading ? 'Saving...' : 'Save'}
-      </button>
-      <Link to="/products" className="btn btn-secondary">
-        Cancel
-      </Link>
+      <div className="modal-footer px-0 pb-0">
+        <button type="button" className="btn btn-secondary" onClick={onCancel}>
+          Cancel
+        </button>
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading ? 'Saving...' : 'Save'}
+        </button>
+      </div>
     </form>
   );
 }
