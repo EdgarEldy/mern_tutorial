@@ -5,7 +5,7 @@ import useCustomers from './useCustomers';
 vi.mock('../services/customer.service');
 
 describe('useCustomers', () => {
-  afterEach(() => vi.clearAllMocks());
+  afterEach(() => vi.restoreAllMocks());
 
   it('starts with loading=true, empty customers, and null error', async () => {
     service.getCustomers.mockResolvedValue({ data: { data: [] } });
