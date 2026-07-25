@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 
-function CustomerForm({ initialValues, onSubmit, loading }) {
+function CustomerForm({ initialValues, onSubmit, onCancel, loading }) {
   const [firstName, setFirstName] = useState(initialValues?.first_name ?? '');
   const [lastName, setLastName] = useState(initialValues?.last_name ?? '');
   const [email, setEmail] = useState(initialValues?.email ?? '');
@@ -69,12 +68,14 @@ function CustomerForm({ initialValues, onSubmit, loading }) {
           onChange={(e) => setAddress(e.target.value)}
         />
       </div>
-      <button type="submit" className="btn btn-primary mr-2" disabled={loading}>
-        {loading ? 'Saving...' : 'Save'}
-      </button>
-      <Link to="/customers" className="btn btn-secondary">
-        Cancel
-      </Link>
+      <div className="modal-footer px-0 pb-0">
+        <button type="button" className="btn btn-secondary" onClick={onCancel}>
+          Cancel
+        </button>
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading ? 'Saving...' : 'Save'}
+        </button>
+      </div>
     </form>
   );
 }
