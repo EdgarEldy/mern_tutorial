@@ -12,7 +12,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use('/api/categories', require('./modules/categories/category.routes'));
+const v1 = express.Router();
+
+v1.use('/categories', require('./modules/categories/category.routes'));
+
+app.use('/api/v1', v1);
 
 app.use(errorMiddleware);
 
