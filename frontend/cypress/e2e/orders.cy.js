@@ -46,7 +46,7 @@ describe('Orders CRUD', () => {
     cy.contains('Alice').should('be.visible');
     cy.contains('Smith').should('be.visible');
     cy.contains('Laptop').should('be.visible');
-    cy.contains('1999.98').should('be.visible');
+    cy.contains('$1999.98').should('be.visible');
   });
 
   it('opens the New Order modal and shows Customer, Product, and Quantity fields', () => {
@@ -169,14 +169,14 @@ describe('Orders CRUD', () => {
       body: { success: false, message: 'Internal server error' },
     }).as('createOrderFail');
 
+    cy.window().then((win) => cy.stub(win, 'alert').as('alertStub'));
+
     cy.contains('button', 'New').click();
     cy.wait('@getCustomers');
     cy.wait('@getProducts');
     cy.get('#customerId').select('Alice Smith');
     cy.get('#productId').select('Laptop ($999.99)');
     cy.get('#quantity').type('1');
-
-    cy.window().then((win) => cy.stub(win, 'alert').as('alertStub'));
     cy.contains('button', 'Save').click();
     cy.wait('@createOrderFail');
     cy.get('@alertStub').should('have.been.calledWith', 'Internal server error');
