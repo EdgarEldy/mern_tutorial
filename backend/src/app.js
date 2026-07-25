@@ -12,9 +12,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-// Module routers are mounted here as they are implemented, e.g.:
+const v1 = express.Router();
+
+// Module routers are mounted on the versioned router as they are implemented, e.g.:
 // const categoriesRouter = require('./modules/categories/categories.routes');
-// app.use('/api/categories', categoriesRouter);
+// v1.use('/categories', categoriesRouter);
+
+app.use('/api/v1', v1);
 
 app.use(errorMiddleware);
 
