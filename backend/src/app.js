@@ -12,11 +12,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use('/api/auth', require('./modules/auth/auth.routes'));
-app.use('/api/categories', require('./modules/categories/category.routes'));
-app.use('/api/products', require('./modules/products/product.routes'));
-app.use('/api/customers', require('./modules/customers/customer.routes'));
-app.use('/api/orders', require('./modules/orders/order.routes'));
+const v1 = express.Router();
+
+v1.use('/auth', require('./modules/auth/auth.routes'));
+v1.use('/categories', require('./modules/categories/category.routes'));
+v1.use('/products', require('./modules/products/product.routes'));
+v1.use('/customers', require('./modules/customers/customer.routes'));
+v1.use('/orders', require('./modules/orders/order.routes'));
+
+app.use('/api/v1', v1);
 
 app.use(errorMiddleware);
 
