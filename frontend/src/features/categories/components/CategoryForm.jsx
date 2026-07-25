@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 
-function CategoryForm({ initialValues, onSubmit, loading }) {
+function CategoryForm({ initialValues, onSubmit, onCancel, loading }) {
   const [categoryName, setCategoryName] = useState(initialValues?.category_name ?? '');
 
   const handleSubmit = (e) => {
@@ -22,12 +21,14 @@ function CategoryForm({ initialValues, onSubmit, loading }) {
           required
         />
       </div>
-      <button type="submit" className="btn btn-primary mr-2" disabled={loading}>
-        {loading ? 'Saving...' : 'Save'}
-      </button>
-      <Link to="/categories" className="btn btn-secondary">
-        Cancel
-      </Link>
+      <div className="modal-footer px-0 pb-0">
+        <button type="button" className="btn btn-secondary" onClick={onCancel}>
+          Cancel
+        </button>
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading ? 'Saving...' : 'Save'}
+        </button>
+      </div>
     </form>
   );
 }
