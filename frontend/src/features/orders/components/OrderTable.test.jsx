@@ -28,7 +28,7 @@ describe('OrderTable', () => {
     expect(screen.getByText(/Alice/)).toBeInTheDocument();
     expect(screen.getByText(/Smith/)).toBeInTheDocument();
     expect(screen.getByText('Laptop')).toBeInTheDocument();
-    expect(screen.getByText('2')).toBeInTheDocument();
+    expect(screen.getByRole('cell', { name: '2' })).toBeInTheDocument();
     expect(screen.getByText('$1999.98')).toBeInTheDocument();
   });
 
