@@ -1,13 +1,11 @@
-import { Link } from 'react-router-dom';
-
-function OrderTable({ orders, onDelete }) {
+function OrderTable({ orders, onNew, onEdit, onDelete }) {
   return (
     <div className="card shadow mb-4">
       <div className="card-header py-3 d-flex justify-content-between align-items-center">
         <h6 className="m-0 font-weight-bold text-primary">Orders</h6>
-        <Link to="/orders/new" className="btn btn-primary btn-sm">
+        <button className="btn btn-primary btn-sm" onClick={onNew}>
           <i className="fas fa-plus fa-sm" /> New
-        </Link>
+        </button>
       </div>
       <div className="card-body">
         <div className="table-responsive">
@@ -33,12 +31,12 @@ function OrderTable({ orders, onDelete }) {
                   <td>{order.quantity}</td>
                   <td>${order.total}</td>
                   <td>
-                    <Link
-                      to={`/orders/${order.id}/edit`}
+                    <button
                       className="btn btn-warning btn-sm mr-2"
+                      onClick={() => onEdit(order.id)}
                     >
                       Edit
-                    </Link>
+                    </button>
                     <button
                       className="btn btn-danger btn-sm"
                       onClick={() => onDelete(order.id)}
