@@ -30,10 +30,10 @@ function SideBar() {
           </a>
         </li>
         <li className="nav-item">
-          <a className="nav-link" href>
+          <Link to="/customers" className="nav-link">
             <i className="fas fa-fw fa-users" />
             <span>Customers</span>
-          </a>
+          </Link>
         </li>
         <li className="nav-item">
           <a
