@@ -17,7 +17,7 @@ vi.mock('../../../lib/axios', () => ({
 }));
 
 describe('customer service', () => {
-  afterEach(() => vi.clearAllMocks());
+  afterEach(() => vi.restoreAllMocks());
 
   it('getCustomers calls GET /customers', async () => {
     axiosInstance.get.mockResolvedValue({ data: { data: [] } });
