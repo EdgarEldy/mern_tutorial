@@ -1,13 +1,11 @@
-import { Link } from 'react-router-dom';
-
-function CategoryTable({ categories, onDelete }) {
+function CategoryTable({ categories, onNew, onEdit, onDelete }) {
   return (
     <div className="card shadow mb-4">
       <div className="card-header py-3 d-flex justify-content-between align-items-center">
         <h6 className="m-0 font-weight-bold text-primary">Categories</h6>
-        <Link to="/categories/new" className="btn btn-primary btn-sm">
+        <button className="btn btn-primary btn-sm" onClick={onNew}>
           <i className="fas fa-plus fa-sm" /> New
-        </Link>
+        </button>
       </div>
       <div className="card-body">
         <div className="table-responsive">
@@ -25,12 +23,12 @@ function CategoryTable({ categories, onDelete }) {
                   <td>{category.id}</td>
                   <td>{category.category_name}</td>
                   <td>
-                    <Link
-                      to={`/categories/${category.id}/edit`}
+                    <button
                       className="btn btn-warning btn-sm mr-2"
+                      onClick={() => onEdit(category.id)}
                     >
                       Edit
-                    </Link>
+                    </button>
                     <button
                       className="btn btn-danger btn-sm"
                       onClick={() => onDelete(category.id)}
