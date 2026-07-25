@@ -27,7 +27,6 @@ describe('CategoryListPage', () => {
 
   afterEach(() => {
     vi.restoreAllMocks();
-    vi.clearAllMocks();
   });
 
   it('shows Loading... when loading=true', () => {
@@ -85,5 +84,46 @@ describe('CategoryListPage', () => {
     render(<CategoryListPage />);
     await user.click(screen.getByRole('button', { name: /delete/i }));
     expect(service.deleteCategory).not.toHaveBeenCalled();
+  });
+
+  it('calls createCategory and refetch when New form is submitted', async () => {
+    const user = userEvent.setup();
+    service.createCategory.mockResolvedValue({});
+    render(<CategoryListPage />);
+    await user.click(screen.getByRole('button', { name: /new/i }));
+    await user.type(screen.getByLabelText('Category Name'), 'Books');
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await waitFor(() => expect(service.createCategory).toHaveBeenCalledWith({ category_name: 'Books' }));
+    expect(mockRefetch).toHaveBeenCalled();
+  });
+
+  it('calls updateCategory and refetch when Edit form is submitted', async () => {
+    const user = userEvent.setup();
+    service.getCategoryById.mockResolvedValue({ data: { data: { id: 1, category_name: 'Electronics' } } });
+    service.updateCategory.mockResolvedValue({});
+    render(<CategoryListPage />);
+    await user.click(screen.getByRole('button', { name: /edit/i }));
+    await waitFor(() => expect(screen.getByText('Edit Category')).toBeInTheDocument());
+    await user.clear(screen.getByLabelText('Category Name'));
+    await user.type(screen.getByLabelText('Category Name'), 'Updated');
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await waitFor(() => expect(service.updateCategory).toHaveBeenCalledWith(1, { category_name: 'Updated' }));
+    expect(mockRefetch).toHaveBeenCalled();
+  });
+
+  it('shows alert when getCategoryById fails', async () => {
+    const user = userEvent.setup();
+    service.getCategoryById.mockRejectedValue(new Error('Not found'));
+    render(<CategoryListPage />);
+    await user.click(screen.getByRole('button', { name: /edit/i }));
+    await waitFor(() => expect(window.alert).toHaveBeenCalledWith('Failed to load category'));
+  });
+
+  it('shows alert when deleteCategory fails', async () => {
+    const user = userEvent.setup();
+    service.deleteCategory.mockRejectedValue({ response: { data: { message: 'Delete failed' } } });
+    render(<CategoryListPage />);
+    await user.click(screen.getByRole('button', { name: /delete/i }));
+    await waitFor(() => expect(window.alert).toHaveBeenCalledWith('Delete failed'));
   });
 });
