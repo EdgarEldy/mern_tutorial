@@ -46,4 +46,37 @@ describe('CategoryModal', () => {
     await user.click(screen.getByRole('button', { name: 'Close' }));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
+
+  it('calls onSubmit with form data when the inner form is submitted', async () => {
+    const user = userEvent.setup();
+    const onSubmit = vi.fn();
+    render(
+      <CategoryModal
+        show={true}
+        title="New Category"
+        onClose={vi.fn()}
+        onSubmit={onSubmit}
+        loading={false}
+      />,
+    );
+    await user.type(screen.getByLabelText('Category Name'), 'Electronics');
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    expect(onSubmit).toHaveBeenCalledWith({ category_name: 'Electronics' });
+  });
+
+  it('calls onClose when the form Cancel button is clicked', async () => {
+    const user = userEvent.setup();
+    const onClose = vi.fn();
+    render(
+      <CategoryModal
+        show={true}
+        title="New Category"
+        onClose={onClose}
+        onSubmit={vi.fn()}
+        loading={false}
+      />,
+    );
+    await user.click(screen.getByRole('button', { name: 'Cancel' }));
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
 });
