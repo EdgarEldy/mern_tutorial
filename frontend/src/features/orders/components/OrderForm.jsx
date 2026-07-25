@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { CustomerSelect } from '../../customers';
 import { ProductSelect } from '../../products';
 import useCustomers from '../../customers/hooks/useCustomers';
 import useProducts from '../../products/hooks/useProducts';
 
-function OrderForm({ initialValues, onSubmit, loading }) {
+function OrderForm({ initialValues, onSubmit, onCancel, loading }) {
   const [customerId, setCustomerId] = useState(initialValues?.customer_id ?? '');
   const [productId, setProductId] = useState(initialValues?.product_id ?? '');
   const [quantity, setQuantity] = useState(initialValues?.quantity ?? '');
@@ -14,7 +13,10 @@ function OrderForm({ initialValues, onSubmit, loading }) {
   const { products } = useProducts();
 
   const selectedProduct = products.find((p) => String(p.id) === String(productId));
-  const total = selectedProduct && quantity ? (selectedProduct.unit_price * Number(quantity)).toFixed(2) : '0.00';
+  const total =
+    selectedProduct && quantity
+      ? (selectedProduct.unit_price * Number(quantity)).toFixed(2)
+      : '0.00';
 
   useEffect(() => {
     if (initialValues?.customer_id) setCustomerId(initialValues.customer_id);
@@ -52,12 +54,14 @@ function OrderForm({ initialValues, onSubmit, loading }) {
         <label>Total</label>
         <input type="text" className="form-control" value={`$${total}`} readOnly />
       </div>
-      <button type="submit" className="btn btn-primary mr-2" disabled={loading}>
-        {loading ? 'Saving...' : 'Save'}
-      </button>
-      <Link to="/orders" className="btn btn-secondary">
-        Cancel
-      </Link>
+      <div className="modal-footer px-0 pb-0">
+        <button type="button" className="btn btn-secondary" onClick={onCancel}>
+          Cancel
+        </button>
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading ? 'Saving...' : 'Save'}
+        </button>
+      </div>
     </form>
   );
 }
