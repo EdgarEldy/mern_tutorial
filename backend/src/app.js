@@ -12,6 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+app.use('/api/auth', require('./modules/auth/auth.routes'));
 app.use('/api/categories', require('./modules/categories/category.routes'));
 app.use('/api/products', require('./modules/products/product.routes'));
 app.use('/api/customers', require('./modules/customers/customer.routes'));
