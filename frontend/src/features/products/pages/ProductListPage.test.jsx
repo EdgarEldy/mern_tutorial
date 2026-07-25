@@ -110,7 +110,13 @@ describe('ProductListPage', () => {
     await user.click(screen.getByRole('button', { name: 'Edit' }));
     await waitFor(() => expect(screen.getByText('Edit Product')).toBeInTheDocument());
     await user.click(screen.getByRole('button', { name: 'Save' }));
-    await waitFor(() => expect(service.updateProduct).toHaveBeenCalledWith(1, expect.any(Object)));
+    await waitFor(() =>
+      expect(service.updateProduct).toHaveBeenCalledWith(1, {
+        product_name: 'Laptop',
+        unit_price: 999.99,
+        category_id: 1,
+      }),
+    );
     expect(refetch).toHaveBeenCalled();
   });
 
@@ -128,5 +134,27 @@ describe('ProductListPage', () => {
     render(<ProductListPage />);
     await user.click(screen.getByRole('button', { name: 'Delete' }));
     await waitFor(() => expect(window.alert).toHaveBeenCalledWith('Delete failed'));
+  });
+
+  it('shows alert when createProduct fails on New form submit', async () => {
+    const user = userEvent.setup();
+    service.createProduct.mockRejectedValue({ response: { data: { message: 'Create failed' } } });
+    render(<ProductListPage />);
+    await user.click(screen.getByRole('button', { name: /new/i }));
+    await user.type(screen.getByLabelText('Product Name'), 'Tablet');
+    await user.type(screen.getByLabelText('Unit Price'), '499.99');
+    await user.selectOptions(screen.getByLabelText('Category'), '1');
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await waitFor(() => expect(window.alert).toHaveBeenCalledWith('Create failed'));
+  });
+
+  it('shows alert when updateProduct fails on Edit form submit', async () => {
+    const user = userEvent.setup();
+    service.updateProduct.mockRejectedValue(new Error('Update failed'));
+    render(<ProductListPage />);
+    await user.click(screen.getByRole('button', { name: 'Edit' }));
+    await waitFor(() => expect(screen.getByText('Edit Product')).toBeInTheDocument());
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await waitFor(() => expect(window.alert).toHaveBeenCalledWith('Save failed'));
   });
 });
