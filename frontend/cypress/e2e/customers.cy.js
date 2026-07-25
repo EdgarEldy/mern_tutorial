@@ -143,17 +143,16 @@ describe('Customers CRUD', () => {
       body: { success: false, message: 'Internal server error' },
     }).as('createCustomerFail');
 
+    cy.window().then((win) => cy.stub(win, 'alert').as('alertStub'));
+
     cy.contains('button', 'New').click();
     cy.get('#firstName').type('Bad');
     cy.get('#lastName').type('Request');
     cy.get('#email').type('bad@example.com');
     cy.get('#telephone').type('000-0000');
     cy.get('#address').type('Bad St');
-
-    cy.on('window:alert', (msg) => {
-      expect(msg).to.eq('Internal server error');
-    });
     cy.contains('button', 'Save').click();
     cy.wait('@createCustomerFail');
+    cy.get('@alertStub').should('have.been.calledWith', 'Internal server error');
   });
 });
