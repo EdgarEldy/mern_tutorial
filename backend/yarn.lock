@@ -35,7 +35,7 @@
     "@apollo/utils.keyvaluecache" "^4.0.0"
     "@apollo/utils.logger" "^3.0.0"
 
-"@apollo/server@5":
+"@apollo/server@^5.0.0":
   version "5.5.1"
   resolved "https://registry.yarnpkg.com/@apollo/server/-/server-5.5.1.tgz#60123c85249384dd3701ea6261e0bfd8d58ee292"
   integrity sha512-Rn3g5TJQsMSUY23CWZTghWdBWyjX7dP1eaEBPkvmM2RHi82cDcpgTIkSCbGvtTUEGjwopLv1AAooU/n7iIZ20A==
