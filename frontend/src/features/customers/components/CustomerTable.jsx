@@ -21,29 +21,37 @@ function CustomerTable({ customers, onNew, onEdit, onDelete }) {
               </tr>
             </thead>
             <tbody>
-              {customers.map((customer) => (
-                <tr key={customer.id}>
-                  <td>{customer.id}</td>
-                  <td>{customer.first_name}</td>
-                  <td>{customer.last_name}</td>
-                  <td>{customer.email}</td>
-                  <td>{customer.telephone}</td>
-                  <td>
-                    <button
-                      className="btn btn-warning btn-sm mr-2"
-                      onClick={() => onEdit(customer.id)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() => onDelete(customer.id)}
-                    >
-                      Delete
-                    </button>
+              {customers.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="text-center">
+                    No customers found.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                customers.map((customer) => (
+                  <tr key={customer.id}>
+                    <td>{customer.id}</td>
+                    <td>{customer.first_name}</td>
+                    <td>{customer.last_name}</td>
+                    <td>{customer.email}</td>
+                    <td>{customer.telephone}</td>
+                    <td>
+                      <button
+                        className="btn btn-warning btn-sm mr-2"
+                        onClick={() => onEdit(customer.id)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() => onDelete(customer.id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

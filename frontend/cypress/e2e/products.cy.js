@@ -149,10 +149,9 @@ describe('Products CRUD', () => {
     cy.get('#unitPrice').type('1');
     cy.get('#categoryId').select('Electronics');
 
-    cy.on('window:alert', (msg) => {
-      expect(msg).to.eq('Save failed');
-    });
+    cy.window().then((win) => cy.stub(win, 'alert').as('alertStub'));
     cy.contains('button', 'Save').click();
     cy.wait('@createProductFail');
+    cy.get('@alertStub').should('have.been.calledWith', 'Internal server error');
   });
 });
