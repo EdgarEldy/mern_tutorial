@@ -21,6 +21,13 @@ function OrderTable({ orders, onNew, onEdit, onDelete }) {
               </tr>
             </thead>
             <tbody>
+              {orders.length === 0 && (
+                <tr>
+                  <td colSpan="6" className="text-center">
+                    No orders found.
+                  </td>
+                </tr>
+              )}
               {orders.map((order) => (
                 <tr key={order.id}>
                   <td>{order.id}</td>
